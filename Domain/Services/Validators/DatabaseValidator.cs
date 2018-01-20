@@ -8,6 +8,7 @@ namespace Domain.Services.Validators
     public class DatabaseValidator : IDatabaseValidator
     {
         private readonly IRepository<Database> _databaseRepository;
+
         public DatabaseValidator(
             IRepository<Database> databaseRepository)
         {

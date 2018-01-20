@@ -1,7 +1,4 @@
 ﻿namespace Domain.Services.ExpressionProviders
 {
-    public interface ISystemExpressionProvider
-    {
-        
-    }
+    public interface ISystemExpressionProvider { }
 }

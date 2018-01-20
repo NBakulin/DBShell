@@ -24,7 +24,7 @@ namespace Domain.Services.OfEntity
             IAttributeService attributeService,
             ITableValidator tableValidator,
             ILinkService linkService,
-            IRepository<Database> databaseRepository, 
+            IRepository<Database> databaseRepository,
             IRepository<Entities.Attribute.Attribute> attributeRepository)
         {
             _tableRepository = tableRepository;
@@ -135,9 +135,9 @@ namespace Domain.Services.OfEntity
 
         public bool HasPrimaryKey(Table table)
         {
-            return 
+            return
                 GetTableAttributes(table)
-                .Any(a => a is PrimaryKey);
+                    .Any(a => a is PrimaryKey);
         }
 
         public bool IsDeployable(Table table)

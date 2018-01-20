@@ -22,8 +22,7 @@ namespace Domain.Repositories
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        { 
-
+        {
             modelBuilder
                 .Entity<Database>()
                 .Property(db => db.ServerName);

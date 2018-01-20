@@ -89,7 +89,7 @@ namespace Domain.Services.Validators
 
         public bool IsUniqueName(Table table, string attributeName)
         {
-            return 
+            return
                 _attributeRepository
                     .All()
                     .Where(a => a.TableId == table.Id)

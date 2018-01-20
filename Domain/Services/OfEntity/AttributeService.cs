@@ -19,7 +19,7 @@ namespace Domain.Services.OfEntity
         private readonly IRepository<Attribute> _attributeRepository;
 
         private readonly IAttributeValidator _attributeValidator;
-        
+
         public AttributeService(
             IRepository<Attribute> attributeRepository,
             IAttributeValidator attributeValidator,
@@ -88,7 +88,7 @@ namespace Domain.Services.OfEntity
             Table table,
             string primaryKeyName)
         {
-            CheckTableName(table:table, name:primaryKeyName);
+            CheckTableName(table: table, name: primaryKeyName);
 
             if (_attributeRepository
                 .All()
@@ -115,7 +115,7 @@ namespace Domain.Services.OfEntity
             string description = null,
             string formForperties = null)
         {
-            CheckTableName(table:table, name:name);
+            CheckTableName(table: table, name: name);
 
             DecimalNumber decimalNumber = new DecimalNumber(
                 _attributeValidator,
@@ -223,7 +223,7 @@ namespace Domain.Services.OfEntity
 
         public IEnumerable<Attribute> GetAll()
         {
-            return 
+            return
                 _attributeRepository
                     .All();
         }
@@ -247,7 +247,7 @@ namespace Domain.Services.OfEntity
             if (!_attributeValidator.IsValidName(name))
                 throw new ArgumentException($"Invalid primary key name {name}.");
 
-            Table table = 
+            Table table =
                 _tableRepository
                     .All()
                     .SingleOrDefault(t => t.Id == attribute.TableId);
@@ -267,7 +267,7 @@ namespace Domain.Services.OfEntity
             if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
-            return 
+            return
                 _attributeRepository
                     .All()
                     .Where(a => a.TableId == table.Id)

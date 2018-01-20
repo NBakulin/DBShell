@@ -32,9 +32,9 @@ namespace App
             _defaultConnectionString = connectionString;
             // sorry for this
             _serverName = new Regex("(?:[Dd]ata\\s+[Ss]ource\\s*=\\s*)(?<server>.*?);")
-                    .Match(_defaultConnectionString)
-                    .Groups["server"]
-                    .Value;
+                .Match(_defaultConnectionString)
+                .Groups["server"]
+                .Value;
 
             _attributeService = attributeService;
             _databaseService = databaseService;

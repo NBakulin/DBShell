@@ -58,7 +58,7 @@ namespace Domain.Services.OfEntity
 
         public Database GetById(int id)
         {
-            return 
+            return
                 _databaseRepository
                     .All()
                     .SingleOrDefault(db => db.Id == id);

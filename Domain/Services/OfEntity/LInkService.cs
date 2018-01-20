@@ -44,14 +44,14 @@ namespace Domain.Services.OfEntity
             if (slaveTable is null)
                 throw new ArgumentNullException(nameof(slaveTable));
 
-            if (!_linkValidator.IsUnique(masterTable:masterTable, slaveTable:slaveTable))
+            if (!_linkValidator.IsUnique(masterTable: masterTable, slaveTable: slaveTable))
                 throw new ArgumentException($"A link between tables {masterTable.Name} and {slaveTable.Name} is already exists.");
 
-            int foreignKeyId = _attributeService.AddForeignKey(masterTable:masterTable, slaveTable:slaveTable);
+            int foreignKeyId = _attributeService.AddForeignKey(masterTable: masterTable, slaveTable: slaveTable);
 
             ForeignKey foreignKey = _attributeService.GetById(foreignKeyId) as ForeignKey;
 
-            PrimaryKey primaryKey = GetPrimaryKey(table:masterTable);
+            PrimaryKey primaryKey = GetPrimaryKey(table: masterTable);
 
             Link link = new Link(
                 masterAttribute: primaryKey,
@@ -91,11 +91,11 @@ namespace Domain.Services.OfEntity
 
         public Link GetLink(Table masterTable, Table slaveTable)
         {
-            return 
+            return
                 _linkRepository
                     .All()
-                    .SingleOrDefault(l => 
-                        l.MasterAttributeId == masterTable.Id && 
+                    .SingleOrDefault(l =>
+                        l.MasterAttributeId == masterTable.Id &&
                         l.SlaveAttribute.Id == slaveTable.Id);
         }
 
@@ -127,12 +127,12 @@ namespace Domain.Services.OfEntity
 
         public ForeignKey GetForeignKey(Table masterTable, Table slaveTable)
         {
-            return 
+            return
                 (from slaveForeignKey in GetForeignKeys(slaveTable).ToList()
-                 let link = _linkRepository
+                    let link = _linkRepository
                         .All()
-                        .SingleOrDefault(l => 
-                            l.MasterAttributeId == masterTable.Id && 
+                        .SingleOrDefault(l =>
+                            l.MasterAttributeId == masterTable.Id &&
                             l.SlaveAttribute.Id == slaveForeignKey.Id)
                     where link != null
                     select slaveForeignKey)

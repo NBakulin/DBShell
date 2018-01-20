@@ -8,6 +8,7 @@ namespace Domain.Services.Validators
     public class LinkValidator : ILinkValidator
     {
         private readonly IRepository<Link> _linkRepository;
+
         public LinkValidator(
             IRepository<Link> linkRepository)
         {
@@ -16,7 +17,7 @@ namespace Domain.Services.Validators
 
         public bool IsUnique(Table masterTable, Table slaveTable)
         {
-            return 
+            return
                 _linkRepository
                     .All()
                     .All(l =>
