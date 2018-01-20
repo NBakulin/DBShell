@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3BCC98B3-766E-4667-B21A-665F5F17AD18}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Domain</RootNamespace>
+    <AssemblyName>Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Attribute\Attribute.cs" />
+    <Compile Include="Entities\Attribute\DecimalNumber.cs" />
+    <Compile Include="Entities\Attribute\Integer\ForeignKey.cs" />
+    <Compile Include="Entities\Attribute\Integer\PrimaryKey.cs" />
+    <Compile Include="Repositories\DefaultContext.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Attribute\Integer\IntegerNumber.cs" />
+    <Compile Include="Entities\Attribute\RealNumber.cs" />
+    <Compile Include="Entities\Attribute\String.cs" />
+    <Compile Include="Entities\Attribute\TSQLType.cs" />
+    <Compile Include="Entities\Database.cs" />
+    <Compile Include="Entities\Link\Link.cs" />
+    <Compile Include="Entities\Link\LinkPointType.cs" />
+    <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\Table.cs" />
+    <Compile Include="Repositories\EntityFrameworkRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Services\ExpressionProviders\ISystemExpressionProvider.cs" />
+    <Compile Include="Services\OfEntity\AttributeService.cs" />
+    <Compile Include="Services\ExpressionProviders\AttributeSqlExpressionProvider.cs" />
+    <Compile Include="Services\OfEntity\DatabaseService.cs" />
+    <Compile Include="Services\ExpressionProviders\DatabaseSqlExpressionProvider.cs" />
+    <Compile Include="Services\DeployService.cs" />
+    <Compile Include="Services\OfEntity\IAttributeService.cs" />
+    <Compile Include="Services\ExpressionProviders\IAttributeSqlExpressionProvider.cs" />
+    <Compile Include="Services\Validators\DatabaseValidator.cs" />
+    <Compile Include="Services\Validators\IAttributeValidator.cs" />
+    <Compile Include="Services\OfEntity\IDatabaseService.cs" />
+    <Compile Include="Services\ExpressionProviders\IDatabaseSqlExpressionProvider.cs" />
+    <Compile Include="Services\IDeployable.cs" />
+    <Compile Include="Services\IDeployService.cs" />
+    <Compile Include="Services\OfEntity\ILinkService.cs" />
+    <Compile Include="Services\ExpressionProviders\ILinkSqlExpressionProvider.cs" />
+    <Compile Include="Services\ISqlExpressionExecutor.cs" />
+    <Compile Include="Services\OfEntity\ITableService.cs" />
+    <Compile Include="Services\ExpressionProviders\ITableSqlExpressionProvider.cs" />
+    <Compile Include="Services\OfEntity\LInkService.cs" />
+    <Compile Include="Services\ExpressionProviders\LinkSqlExpressionProvider.cs" />
+    <Compile Include="Services\SqlExpressionExecutor.cs" />
+    <Compile Include="Services\OfEntity\TableService.cs" />
+    <Compile Include="Services\ExpressionProviders\TableSqlExpressionProvider.cs" />
+    <Compile Include="Services\Validators\IDatabaseValidator.cs" />
+    <Compile Include="Services\Validators\ILinkValidator.cs" />
+    <Compile Include="Services\Validators\ITableValidator.cs" />
+    <Compile Include="Services\Validators\LinkValidator.cs" />
+    <Compile Include="Services\Validators\TableValidator.cs" />
+    <Compile Include="Services\Validators\AttributeValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
