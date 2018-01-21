@@ -9,6 +9,12 @@ namespace Domain.Services
     {
         public void Execute(string sqlConnectionString, string sqlExpression)
         {
+            if (sqlConnectionString is null)
+                throw new ArgumentNullException(nameof(sqlConnectionString));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+
+
             void PrintStatus() => Console.WriteLine($"\n{sqlConnectionString}\n{sqlExpression}");
             void PrintResult(int result) => Console.WriteLine($"Rows affected: {result}.");
 
@@ -26,6 +32,11 @@ namespace Domain.Services
 
         public void ExecuteAsDefault(string serverName, string sqlExpression)
         {
+            if (serverName is null)
+                throw new ArgumentNullException(nameof(serverName));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+
             string connectionString = $"Data Source={serverName};Initial Catalog=master;Integrated Security=True";
 
             Execute(connectionString, sqlExpression);
@@ -33,6 +44,12 @@ namespace Domain.Services
 
         public TResult ExecuteScalar<TResult>(string sqlConnectionString, string sqlExpression)
         {
+            if (sqlConnectionString is null)
+                throw new ArgumentNullException(nameof(sqlConnectionString));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+
+
             void PrintStatus() => Console.WriteLine($"\n{sqlConnectionString}\n{sqlExpression}");
 
             TResult result;
@@ -51,6 +68,11 @@ namespace Domain.Services
 
         public TResult ExecuteScalarAsDefault<TResult>(string serverName, string sqlExpression)
         {
+            if (serverName is null)
+                throw new ArgumentNullException(nameof(serverName));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+
             string connectionString = $"Data Source={serverName};Initial Catalog=master;Integrated Security=True";
 
             return ExecuteScalar<TResult>(connectionString, sqlExpression);

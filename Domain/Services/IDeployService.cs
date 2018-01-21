@@ -6,10 +6,12 @@ namespace Domain.Services
     {
         bool IsDeployed(Database database);
 
-        bool IsDeployable(Database database);
+        bool IsDeployPossible(Database database);
 
-        void DeployDatabase(Database database);
+        void Deploy(Database database);
 
-        void DropDatabase(Database database);
+        void UpdateDeployed(Database database);
+
+        void DropDeployed(Database database);
     }
 }

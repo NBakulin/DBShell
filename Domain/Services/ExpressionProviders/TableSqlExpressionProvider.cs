@@ -47,6 +47,12 @@ namespace Domain.Services.ExpressionProviders
                 "\n)";
         }
 
+        public string Update(Table table)
+        {
+            return
+                $"EXEC sp_rename \'{table.DeployName}\', \'{table.Name}\'";
+        }
+
         public string Remove(Table table)
         {
             return

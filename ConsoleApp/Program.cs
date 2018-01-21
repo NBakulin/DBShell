@@ -136,8 +136,16 @@ namespace ConsoleApp
             App.DeployDatabase(sales);
             // 5.3 Check if deployed
             bool deployed = App.IsDatabaseDeployed(sales);
-            // 5.4 Drop database
-            App.DropDatabase(sales);
+
+            App.RenameDatabase(sales, "SuperSales");
+            App.RenameTable(customersTable, "SuperCustomers");
+            _Attribute age = App.GetAttributeByName(customersTable, "Age");
+            App.RenameAttribute(age, "SuperAge");
+
+            // 5.4 Update deployed
+            App.UpdateDeployedDatabase(sales);
+            // 5.5 Drop database
+            App.DropDeployedDatabase(sales);
 
             #endregion
 

@@ -8,6 +8,8 @@ namespace Domain.Services.ExpressionProviders
 
         string CreateFull(Table table);
 
+        string Update(Table table);
+
         string Remove(Table table);
     }
 }

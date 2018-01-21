@@ -246,17 +246,22 @@ namespace App
 
         public bool IsDatabaseDeployable(Database database)
         {
-            return _deployService.IsDeployable(database);
+            return _deployService.IsDeployPossible(database);
         }
 
         public void DeployDatabase(Database database)
         {
-            _deployService.DeployDatabase(database);
+            _deployService.Deploy(database);
         }
 
-        public void DropDatabase(Database database)
+        public void UpdateDeployedDatabase(Database database)
         {
-            _deployService.DropDatabase(database);
+            _deployService.UpdateDeployed(database: database);
+        }
+
+        public void DropDeployedDatabase(Database database)
+        {
+            _deployService.DropDeployed(database);
         }
 
         #endregion

@@ -10,6 +10,13 @@ namespace Domain.Services.ExpressionProviders
                 $"CREATE DATABASE {database.Name}";
         }
 
+        public string UpdateName(Database database)
+        {
+            return
+                $"ALTER DATABASE {database.DeployName} \n" +
+                $"\tMODIFY NAME = {database.Name}";
+        }
+
         public string Remove(Database database)
         {
             return
