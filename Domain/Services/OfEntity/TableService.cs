@@ -19,6 +19,7 @@ namespace Domain.Services.OfEntity
         private readonly IAttributeService _attributeService;
         private readonly ILinkService _linkService;
 
+
         public TableService(
             IRepository<Table> tableRepository,
             IAttributeService attributeService,
@@ -143,6 +144,13 @@ namespace Domain.Services.OfEntity
         public bool IsDeployable(Table table)
         {
             return HasPrimaryKey(table);
+        }
+
+        public void OffModified(Table table)
+        {
+            table.OffModified();
+
+            _tableRepository.Update(table);
         }
     }
 }

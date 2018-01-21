@@ -25,5 +25,7 @@ namespace Domain.Services.OfEntity
         void RemoveLink(Link tink);
 
         bool HasPrimaryKey(Table table);
+
+        void OffModified(Table table);
     }
 }

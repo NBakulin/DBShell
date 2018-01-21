@@ -16,5 +16,7 @@ namespace Domain.Services.OfEntity
         IEnumerable<Database> GetAll();
 
         void Rename(Database database, string name);
+
+        void OffModified(Database database);
     }
 }

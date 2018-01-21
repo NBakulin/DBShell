@@ -68,5 +68,7 @@ namespace Domain.Services.OfEntity
         Attribute GetByName(Table table, string name);
 
         Attribute GetById(int id);
+
+        void OffModified(Attribute attribute);
     }
 }

@@ -13,6 +13,9 @@ namespace Domain.Entities.Attribute
         [MaxLength(64)]
         public string Name { get; protected set; }
 
+        [MaxLength(64)]
+        public string DeployName { get; protected set; }
+
         [Required]
         public TSQLType SqlType { get; protected set; }
 
@@ -34,9 +37,6 @@ namespace Domain.Entities.Attribute
         protected internal int TableId { get; protected set; }
         protected internal Table Table { get; protected set; }
 
-        [NotMapped]
-        public bool IsModified { get; protected set; }
-
 
         protected Attribute() { }
 
@@ -52,7 +52,13 @@ namespace Domain.Entities.Attribute
         {
             _attributeValidator = validator;
 
-            Rename(name);
+            if (name is null)
+                throw new ArgumentNullException(nameof(name));
+            if (!_attributeValidator.IsValidName(name))
+                throw new ArgumentException("Wrong \"Name\" argument.");
+            Name = name;
+            DeployName = Name;
+
             ChangeType(sqlType);
 
             ChangeIsNullable(isNullable);
@@ -63,22 +69,22 @@ namespace Domain.Entities.Attribute
             ChangeFormSettings(formSettings);
         }
 
-        protected void OnModified()
-        {
-            IsModified = true;
-        }
-
-        protected internal void OffModified()
-        {
-            IsModified = false;
-        }
-
         public void Rename(string name)
         {
+            if (name is null)
+                throw new ArgumentNullException(nameof(name));
+
             if (!_attributeValidator.IsValidName(name))
                 throw new ArgumentException("Wrong \"Name\" argument.");
 
-            Name = name;
+            {
+                if (!IsModified)
+                {
+                    DeployName = Name;
+                }
+
+                Name = name;
+            }
 
             OnModified();
         }

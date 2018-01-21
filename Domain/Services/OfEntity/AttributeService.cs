@@ -289,5 +289,12 @@ namespace Domain.Services.OfEntity
 
             return true;
         }
+
+        public void OffModified(Attribute attribute)
+        {
+            attribute.OffModified();
+
+            _attributeRepository.Update(attribute);
+        }
     }
 }

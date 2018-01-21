@@ -87,9 +87,16 @@ namespace Domain.Services.OfEntity
             _databaseRepository.Update(database);
         }
 
+        public void OffModified(Database database)
+        {
+            database.OffModified();
+
+            _databaseRepository.Update(database);
+        }
+
         public void Remove(Database database)
         {
-            // Firstly need to remove all related links because cascade delete is disabled on links!
+            // Firstly need to remove all related links because cascade delete is disabled on it!
             _tableService
                 .GetDatabaseLinks(database: database)
                 .ToList()
