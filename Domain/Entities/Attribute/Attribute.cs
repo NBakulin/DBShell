@@ -34,7 +34,7 @@ namespace Domain.Entities.Attribute
         [Column(TypeName = "xml")]
         public string FormSettings { get; protected set; }
 
-        protected internal int TableId { get; protected set; }
+        public int TableId { get; protected set; }
         protected internal Table Table { get; protected set; }
 
 

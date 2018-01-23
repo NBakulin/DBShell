@@ -26,9 +26,64 @@ namespace ConsoleApp
 
             WriteConnectionStatus();
 
-            ApiExample();
+            //ApiExample();
+
+            if(App.IsDatabaseExist("MyBase"))
+                App.RemoveDatabase(App.GetDatabaseByName("MyBase"));
+
+            App.CreateDatabase("MyBase");
+            Database myBase = App.GetDatabaseByName("MyBase");
+            App.AddTable(myBase, "Customers");
+            App.AddTable(myBase, "Orders");
+            Table customers = App.GetTableByName(myBase, "Customers");
+            Table orders = App.GetTableByName(myBase, "Orders");
+            App.AddStringAttribute(customers, "Name");
+            App.AddStringAttribute(customers, "Surname");
+            App.AddIntegerAttribute(customers, "Age");
+            App.AddDecimalAttribute(orders, "Price");
+            App.AddStringAttribute(orders, "Name");
+            App.AddLink(masterTable: customers, slaveTable: orders);
+
+            App.RenameDatabase(myBase, "SuperBase");
+            App.RenameTable(customers, "SuperCustomers");
+            App.RenameAttribute(App.GetAttributeByName(customers, "Name"), "SuperName");
+
+            PrintAllMetadata();
 
             Container.Dispose();
+        }
+
+        private static void PrintAllMetadata()
+        {
+            App.GetAllDatabases()
+                .ToList()
+                .ForEach(db =>
+                {
+                    Console.WriteLine($"DATABASE: Id = {db.Id} Name = {db.Name} DeployName = {db.DeployName} IsModified = {db.IsModified}\n");
+
+                    App.GetDatabaseTables(db)
+                        .ToList()
+                        .ForEach(t =>
+                        {
+                            Console.WriteLine($"\tTABLE: Id = {t.Id} DatabaseId = {t.DatabaseId} Name = {t.Name} DeployName = {t.DeployName} IsMod={t.IsModified}\n");
+
+                            App.GetTableAttributes(t)
+                                .ToList()
+                                .ForEach(a =>
+                                {
+                                    Console.WriteLine($"\t\tATTR: Id = {a.Id} TableId = {a.TableId} Name = {a.Name} DeployName = {a.DeployName} IsModified = {a.IsModified} IsNullable = {a.IsNullable} IsPrimaryKey = {a.IsPrimaryKey} IsIndexed = {a.IsIndexed}");
+                                    Console.WriteLine($"\t\t      Type = {a.GetType()}");
+                                    Console.WriteLine($"\t\t      Description = {a.Description}");
+                                    Console.WriteLine($"\t\t      FormSettings = {a.FormSettings}\n");
+                                });
+                        });
+                    App.GetDatabaseLinks(db)
+                        .ToList()
+                        .ForEach(l =>
+                        {
+                            Console.WriteLine($"\tLINK: Id = {l.Id} PrimaryKeyID = {l.MasterAttributeId} ForeignKeyID = {l.SlaveAttribute.Id} IsDeleteCascade = {l.IsDeleteCascade} IsUpdateCascade = {l.IsUpdateCascase} IsModified = {l.IsModified}\n");
+                        });
+                });
         }
 
         private static void WriteConnectionStatus()
@@ -39,12 +94,6 @@ namespace ConsoleApp
         private static void ApiExample()
         {
             // API
-
-            // TODO
-            // 2. Удаление развернутой бд после удаления основной
-            // 3. Удаление таблицы: удаление развернутой таблицы, проверка на первичный ключ.
-            // 4. Удаление атрибута
-            // 5. Обновление развернутой при удалении
 
             #region 1_DATABASE
 

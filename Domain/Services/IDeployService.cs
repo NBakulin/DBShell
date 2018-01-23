@@ -1,4 +1,6 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Attribute;
+using Domain.Entities.Link;
 
 namespace Domain.Services
 {
@@ -12,6 +14,12 @@ namespace Domain.Services
 
         void UpdateDeployed(Database database);
 
-        void DropDeployed(Database database);
+        void DropDeployedDatabase(Database database);
+
+        void DropDeployedTable(Table table);
+
+        void DropDeployedAttribute(Attribute attribute);
+
+        void DropDeployedLink(Link link);
     }
 }

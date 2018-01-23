@@ -14,7 +14,7 @@ namespace Domain.Entities
         [MaxLength(64)]
         public string DeployName { get; protected set; }
 
-        protected internal int DatabaseId { get; protected set; }
+        public int DatabaseId { get; protected set; }
         protected internal Database Database { get; protected set; }
 
         protected internal IList<_Attribute> Attributes { get; protected set; }

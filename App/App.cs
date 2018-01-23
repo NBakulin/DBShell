@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using Domain.Entities;
 using Domain.Entities.Attribute;
+using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Services;
 using Domain.Services.OfEntity;
@@ -91,6 +92,11 @@ namespace App
 
         public void RemoveDatabase(Database database)
         {
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.DropDeployedDatabase(database: database);
+            }
+
             _databaseService.Remove(database);
         }
 
@@ -130,6 +136,13 @@ namespace App
 
         public void RemoveTable(Table table)
         {
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.DropDeployedTable(table: table);
+            }
+
             _tableService.RemoveTable(table);
         }
 
@@ -200,6 +213,15 @@ namespace App
 
         public void RemoveAttribute(Attribute attribute)
         {
+            Table table = _tableService.GetTableById(attribute.TableId);
+
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.DropDeployedAttribute(attribute: attribute);
+            }
+
             _attributeService.Remove(attribute);
         }
 
@@ -242,6 +264,17 @@ namespace App
 
         public void RemoveLink(Link link)
         {
+            PrimaryKey primaryKey = _attributeService.GetById(link.MasterAttributeId) as PrimaryKey;
+
+            Table table = _tableService.GetTableById(primaryKey.TableId);
+
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.DropDeployedLink(link: link);
+            }
+
             _linkService.Remove(link);
         }
 
@@ -271,7 +304,7 @@ namespace App
 
         public void DropDeployedDatabase(Database database)
         {
-            _deployService.DropDeployed(database);
+            _deployService.DropDeployedDatabase(database);
         }
 
         #endregion

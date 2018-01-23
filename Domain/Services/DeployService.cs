@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Domain.Entities;
+using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Repositories;
 using Domain.Services.ExpressionProviders;
@@ -27,6 +28,7 @@ namespace Domain.Services
         private readonly IDatabaseService _databaseService;
         private readonly ITableService _tableService;
         private readonly IAttributeService _attributeService;
+        private readonly ILinkService _linkService;
 
         public DeployService(
             ISqlExpressionExecutor sqlExecutor,
@@ -40,7 +42,8 @@ namespace Domain.Services
             IRepository<Link> linkRepository,
             IDatabaseService databaseService,
             ITableService tableService,
-            IAttributeService attributeService)
+            IAttributeService attributeService,
+            ILinkService linkService)
         {
             _sqlExecutor = sqlExecutor;
             _databaseSqlExpressionProvider = databaseSqlExpressionProvider;
@@ -54,6 +57,7 @@ namespace Domain.Services
             _databaseService = databaseService;
             _tableService = tableService;
             _attributeService = attributeService;
+            _linkService = linkService;
         }
 
 
@@ -248,7 +252,7 @@ namespace Domain.Services
             }
         }
 
-        public void DropDeployed(Database database)
+        public void DropDeployedDatabase(Database database)
         {
             if (database is null)
                 throw new ArgumentNullException(nameof(database));
@@ -257,6 +261,85 @@ namespace Domain.Services
                 serverName: database.ServerName,
                 sqlExpression: _databaseSqlExpressionProvider
                     .Remove(database));
+        }
+
+        public void DropDeployedTable(Table table)
+        {
+            if (table is null)
+                throw new ArgumentNullException(nameof(table));
+
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            IEnumerable<Attribute> attributes = _tableService.GetTableAttributes(table);
+
+            
+            PrimaryKey primaryKey = attributes.OfType<PrimaryKey>().Single();
+
+            _linkService
+                .GetDatabaseLinks(database: database)
+                .Where(l => l.MasterAttributeId == primaryKey.Id)
+                .ToList()
+                .ForEach(DropDeployedLink);
+
+            IEnumerable<ForeignKey> foreignKeys = attributes.OfType<ForeignKey>();
+
+            _linkService
+                .GetDatabaseLinks(database: database)
+                .ToList()
+                .ForEach(l =>
+                {
+                    if (foreignKeys.Any(fk => fk.Id == l.SlaveAttribute.Id))
+                    {
+                        DropDeployedLink(l);
+                    }
+                });
+
+            _sqlExecutor.Execute(
+                sqlConnectionString: database.ConnectionString,
+                sqlExpression: _tableSqlExpressionProvider
+                    .Remove(table: table));
+        }
+
+        public void DropDeployedAttribute(Attribute attribute)
+        {
+            switch (attribute) {
+                case null:
+                    throw new ArgumentNullException(nameof(attribute));
+                case PrimaryKey _:
+                case ForeignKey _:
+                    throw new ArgumentException($"The attribute {attribute.Name} is primary or foreign key.");
+            }
+
+            Table table = _tableService.GetTableById(attribute.TableId);
+
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            _sqlExecutor.Execute(
+                sqlConnectionString: database.ConnectionString,
+                sqlExpression: _attributeSqlExpressionProvider
+                    .Delele(attribute: attribute));
+        }
+
+        public void DropDeployedLink(Link link)
+        {
+            if (link is null)
+                throw new ArgumentNullException(nameof(link));
+            
+            ForeignKey foreignKey = _attributeService.GetById(link.SlaveAttribute.Id) as ForeignKey;
+
+            Table table = _tableService.GetTableById(foreignKey.TableId);
+
+            Database database = _databaseService.GetById(table.DatabaseId);
+
+            _sqlExecutor.Execute(
+                sqlConnectionString: database.ConnectionString,
+                sqlExpression: _attributeSqlExpressionProvider
+                    .Delele(attribute: foreignKey));
+
+            _sqlExecutor.Execute(
+                sqlConnectionString: database.ConnectionString,
+                sqlExpression: _linkSqlExpressionProvider
+                    .Remove(link: link));
         }
     }
 }

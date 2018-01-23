@@ -76,6 +76,9 @@ namespace Domain.Services.ExpressionProviders
                 case String a when a.Length != null:
                     return defaultTypeString + $"({a.Length})";
 
+                case String _:
+                    return defaultTypeString + "(MAX)";
+
                 case RealNumber a when a.BitCapacity != null:
                     return defaultTypeString + $"({a.BitCapacity})";
 
@@ -84,6 +87,9 @@ namespace Domain.Services.ExpressionProviders
 
                 case DecimalNumber a when a.Precision != null && a.Scale != null:
                     return defaultTypeString + $"({a.Precision},{a.Scale})";
+
+                case DecimalNumber _:
+                    return defaultTypeString;
 
                 default:
                     throw new ArgumentException("Unexpected attribute type: " + attribute.GetType());
