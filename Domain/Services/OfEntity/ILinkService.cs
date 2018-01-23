@@ -15,7 +15,7 @@ namespace Domain.Services.OfEntity
 
         void Remove(Link link);
 
-        IEnumerable<Link> GetAll(Database database);
+        IEnumerable<Link> GetDatabaseLinks(Database database);
 
         Link GetLink(Table masterTable, Table slaveTable);
 

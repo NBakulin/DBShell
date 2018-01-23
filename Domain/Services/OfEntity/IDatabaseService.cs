@@ -5,6 +5,8 @@ namespace Domain.Services.OfEntity
 {
     public interface IDatabaseService : IDeployable<Database>
     {
+        bool IsDatabaseExist(string databaseName);
+
         void Add(string databaseName, string serverName);
 
         void Remove(Database database);

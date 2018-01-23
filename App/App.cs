@@ -69,6 +69,11 @@ namespace App
 
         #region DATABASE
 
+        public bool IsDatabaseExist(string databaseName)
+        {
+            return _databaseService.IsDatabaseExist(databaseName);
+        }
+
         public void CreateDatabase(string name)
         {
             _databaseService.Add(name, _serverName);
@@ -116,6 +121,11 @@ namespace App
         public Table GetTableByName(Database database, string name)
         {
             return _tableService.GetTableByName(database, name);
+        }
+
+        public Table GetTableById(int id)
+        {
+            return _tableService.GetTableById(tableId: id);
         }
 
         public void RemoveTable(Table table)
@@ -225,9 +235,9 @@ namespace App
                 isCascadeUpdate: isCascadeUpdate);
         }
 
-        public IEnumerable<Link> GetAllLinks(Database database)
+        public IEnumerable<Link> GetDatabaseLinks(Database database)
         {
-            return _linkService.GetAll(database);
+            return _linkService.GetDatabaseLinks(database);
         }
 
         public void RemoveLink(Link link)

@@ -24,6 +24,16 @@ namespace Domain.Services.OfEntity
             _tableService = tableService;
         }
 
+        public bool IsDatabaseExist(string databaseName)
+        {
+            return
+                _databaseRepository
+                    .All()
+                    .Any(db =>
+                        db.Name == databaseName ||
+                        db.DeployName == databaseName);
+        }
+
         public void Add(string databaseName, string serverName)
         {
             if (databaseName is null)

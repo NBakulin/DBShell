@@ -91,7 +91,7 @@ namespace Domain.Services.OfEntity
 
         public IEnumerable<Link> GetDatabaseLinks(Database database)
         {
-            return _linkService.GetAll(database: database);
+            return _linkService.GetDatabaseLinks(database: database);
         }
 
         public IEnumerable<Entities.Attribute.Attribute> GetTableAttributes(Table table)

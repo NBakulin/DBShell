@@ -69,7 +69,7 @@ namespace Domain.Services.OfEntity
             _linkRepository.Remove(link);
         }
 
-        public IEnumerable<Link> GetAll(Database database)
+        public IEnumerable<Link> GetDatabaseLinks(Database database)
         {
             IQueryable<Table> tables =
                 _tableRepository
