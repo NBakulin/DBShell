@@ -30,7 +30,7 @@ namespace Domain.Services.OfEntity
             _tableRepository = tableRepository;
         }
 
-        private void CheckTableName(Table table, string name)
+        private void CheckAttributeName(Table table, string name)
         {
             if (table is null)
                 throw new ArgumentNullException(nameof(table));
@@ -73,11 +73,8 @@ namespace Domain.Services.OfEntity
             GetUniqueForeignKeyName(out string foregnKeyName);
 
             ForeignKey foreignKey = new ForeignKey(
-                validator: _attributeValidator,
                 name: foregnKeyName,
-                isNullable: true);
-
-            slaveTable.AddAttribute(foreignKey);
+                isNullable: true) {TableId = slaveTable.Id};
 
             _attributeRepository.Add(foreignKey);
 
@@ -88,7 +85,7 @@ namespace Domain.Services.OfEntity
             Table table,
             string primaryKeyName)
         {
-            CheckTableName(table: table, name: primaryKeyName);
+            CheckAttributeName(table: table, name: primaryKeyName);
 
             if (_attributeRepository
                 .All()
@@ -96,9 +93,7 @@ namespace Domain.Services.OfEntity
                 .Any(a => a is PrimaryKey))
                 throw new InvalidOperationException($"The table {table.Name} already has a primary key.");
 
-            PrimaryKey primaryKey = new PrimaryKey(_attributeValidator, primaryKeyName);
-
-            table.AddAttribute(primaryKey);
+            PrimaryKey primaryKey = new PrimaryKey(primaryKeyName) {TableId = table.Id};
 
             _attributeRepository.Add(primaryKey);
         }
@@ -115,10 +110,9 @@ namespace Domain.Services.OfEntity
             string description = null,
             string formForperties = null)
         {
-            CheckTableName(table: table, name: name);
+            CheckAttributeName(table: table, name: name);
 
             DecimalNumber decimalNumber = new DecimalNumber(
-                _attributeValidator,
                 name: name,
                 sqlType: sqlType,
                 precision: precision,
@@ -127,9 +121,7 @@ namespace Domain.Services.OfEntity
                 isPrimaryKey: isPrimaryKey,
                 isIndexed: isIndexed,
                 description: description,
-                formSettings: formForperties);
-
-            table.AddAttribute(decimalNumber);
+                formSettings: formForperties) {TableId = table.Id};
 
             _attributeRepository.Add(decimalNumber);
         }
@@ -144,19 +136,16 @@ namespace Domain.Services.OfEntity
             string description = null,
             string formForperties = null)
         {
-            CheckTableName(table: table, name: name);
+            CheckAttributeName(table: table, name: name);
 
             IntegerNumber integer = new IntegerNumber(
-                _attributeValidator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,
                 isPrimaryKey: isPrimaryKey,
                 isIndexed: isIndexed,
                 description: description,
-                formSettings: formForperties);
-
-            table.AddAttribute(integer);
+                formSettings: formForperties) {TableId = table.Id};
 
             _attributeRepository.Add(integer);
         }
@@ -172,10 +161,9 @@ namespace Domain.Services.OfEntity
             string description = null,
             string formForperties = null)
         {
-            CheckTableName(table: table, name: name);
+            CheckAttributeName(table: table, name: name);
 
             RealNumber realNumber = new RealNumber(
-                _attributeValidator,
                 name: name,
                 sqlType: sqlType,
                 bitCapacity: bitCapacity,
@@ -183,9 +171,7 @@ namespace Domain.Services.OfEntity
                 isPrimaryKey: isPrimaryKey,
                 isIndexed: isIndexed,
                 description: description,
-                formSettings: formForperties);
-
-            table.AddAttribute(realNumber);
+                formSettings: formForperties) {TableId = table.Id};
 
             _attributeRepository.Add(realNumber);
         }
@@ -202,10 +188,9 @@ namespace Domain.Services.OfEntity
             string description = null,
             string formProperties = null)
         {
-            CheckTableName(table: table, name: name);
+            CheckAttributeName(table: table, name: name);
 
             String attribute = new String(
-                _attributeValidator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,
@@ -214,9 +199,7 @@ namespace Domain.Services.OfEntity
                 length: length,
                 defaultValue: defaultValue,
                 description: description,
-                formSettings: formProperties);
-
-            table.AddAttribute(attribute);
+                formSettings: formProperties) {TableId = table.Id};
 
             _attributeRepository.Add(attribute);
         }
@@ -243,6 +226,8 @@ namespace Domain.Services.OfEntity
                 throw new ArgumentNullException(nameof(attribute));
             if (name is null)
                 throw new ArgumentNullException(nameof(name));
+
+            if (attribute.Name == name) return;
 
             if (!_attributeValidator.IsValidName(name))
                 throw new ArgumentException($"Invalid primary key name {name}.");

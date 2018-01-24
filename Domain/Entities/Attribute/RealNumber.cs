@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Domain.Services.Validators;
 
 namespace Domain.Entities.Attribute
 {
@@ -17,7 +16,6 @@ namespace Domain.Entities.Attribute
         protected internal RealNumber() { }
 
         protected internal RealNumber(
-            IAttributeValidator validator,
             string name,
             TSQLType sqlType,
             int? bitCapacity = null,
@@ -27,7 +25,6 @@ namespace Domain.Entities.Attribute
             string description = null,
             string formSettings = null)
             : base(
-                validator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,

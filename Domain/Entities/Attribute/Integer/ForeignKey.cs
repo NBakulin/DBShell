@@ -1,20 +1,17 @@
-﻿using Domain.Services.Validators;
+﻿using System.Collections.Generic;
 
 namespace Domain.Entities.Attribute.Integer
 {
     public class ForeignKey : IntegerNumber
     {
-        public Link.Link Link { get; protected set; }
-
+        public IList<Link.Link> Links { get; protected set; }
 
         protected internal ForeignKey() { }
 
         protected internal ForeignKey(
-            IAttributeValidator validator,
             string name,
             bool isNullable)
             : base(
-                validator: validator,
                 name: name,
                 sqlType: TSQLType.INT,
                 isNullable: isNullable,

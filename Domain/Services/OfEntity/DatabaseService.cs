@@ -86,6 +86,8 @@ namespace Domain.Services.OfEntity
             if (databaseName is null)
                 throw new ArgumentNullException(nameof(databaseName));
 
+            if (database.Name == databaseName) return;
+
             if (!_databaseValidator.IsValidName(name: databaseName))
                 throw new ArgumentException($"Invalid database tableName {databaseName}.", nameof(databaseName));
 

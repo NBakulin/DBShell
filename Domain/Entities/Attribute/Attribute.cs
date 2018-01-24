@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Domain.Services.Validators;
 
 namespace Domain.Entities.Attribute
 {
     public abstract class Attribute : Entity
     {
-        private readonly IAttributeValidator _attributeValidator;
-
         [Required]
         [MaxLength(64)]
         public string Name { get; protected set; }
@@ -34,14 +31,13 @@ namespace Domain.Entities.Attribute
         [Column(TypeName = "xml")]
         public string FormSettings { get; protected set; }
 
-        public int TableId { get; protected set; }
+        public int TableId { get; protected internal set; }
         protected internal Table Table { get; protected set; }
 
 
         protected Attribute() { }
 
         protected Attribute(
-            IAttributeValidator validator,
             string name,
             TSQLType sqlType,
             bool isNullable = true,
@@ -50,13 +46,7 @@ namespace Domain.Entities.Attribute
             string description = null,
             string formSettings = null)
         {
-            _attributeValidator = validator;
-
-            if (name is null)
-                throw new ArgumentNullException(nameof(name));
-            if (!_attributeValidator.IsValidName(name))
-                throw new ArgumentException("Wrong \"Name\" argument.");
-            Name = name;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             DeployName = Name;
 
             ChangeType(sqlType);
@@ -74,9 +64,6 @@ namespace Domain.Entities.Attribute
             if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
-            if (!_attributeValidator.IsValidName(name))
-                throw new ArgumentException("Wrong \"Name\" argument.");
-
             {
                 if (!IsModified)
                 {
@@ -91,9 +78,6 @@ namespace Domain.Entities.Attribute
 
         public void ChangeType(TSQLType type)
         {
-            if (!_attributeValidator.IsValidType(GetType(), type))
-                throw new ArgumentException("Wrong \"Type\" argument.");
-
             SqlType = type;
 
             OnModified();

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Domain.Services.Validators;
 
 namespace Domain.Entities.Attribute
 {
@@ -16,7 +15,6 @@ namespace Domain.Entities.Attribute
         protected internal String() { }
 
         protected internal String(
-            IAttributeValidator validator,
             string name,
             TSQLType sqlType,
             bool isNullable = true,
@@ -27,7 +25,6 @@ namespace Domain.Entities.Attribute
             string description = null,
             string formSettings = null)
             : base(
-                validator: validator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,

@@ -9,7 +9,10 @@ namespace Domain.Repositories
 {
     public class DefaultContext : DbContext
     {
-        public DefaultContext() : base("DefaultContext") { }
+        public DefaultContext() : base("DefaultContext")
+        {
+            Database.Log = System.Console.WriteLine;
+        }
 
 
         public DbSet<Database> DataBases { get; set; }
@@ -53,11 +56,12 @@ namespace Domain.Repositories
                 .WithRequired(l => l.MasterAttribute)
                 .HasForeignKey(l => l.MasterAttributeId)
                 .WillCascadeOnDelete(false);
+
             modelBuilder
                 .Entity<ForeignKey>()
-                .HasOptional(fk => fk.Link)
+                .HasMany(fk => fk.Links)
                 .WithRequired(l => l.SlaveAttribute)
-                .Map(pk => pk.MapKey("SlaveAttributeId"))
+                .HasForeignKey(l => l.SlaveAttributeId)
                 .WillCascadeOnDelete(false);
         }
     }

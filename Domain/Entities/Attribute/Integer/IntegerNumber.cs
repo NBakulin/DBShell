@@ -1,13 +1,10 @@
-﻿using Domain.Services.Validators;
-
-namespace Domain.Entities.Attribute.Integer
+﻿namespace Domain.Entities.Attribute.Integer
 {
     public class IntegerNumber : Attribute
     {
         protected internal IntegerNumber() { }
 
         protected internal IntegerNumber(
-            IAttributeValidator validator,
             string name,
             TSQLType sqlType,
             bool isNullable = true,
@@ -16,7 +13,6 @@ namespace Domain.Entities.Attribute.Integer
             string description = null,
             string formSettings = null)
             : base(
-                validator: validator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,

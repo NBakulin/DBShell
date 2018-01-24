@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Domain.Services.Validators;
 
 namespace Domain.Entities.Attribute.Integer
 {
@@ -10,17 +9,12 @@ namespace Domain.Entities.Attribute.Integer
         protected internal PrimaryKey() { }
 
         protected internal PrimaryKey(
-            IAttributeValidator validator,
             string name)
             : base(
-                validator: validator,
                 name: name,
                 sqlType: TSQLType.INT,
                 isNullable: false,
                 isPrimaryKey: true,
-                isIndexed: true)
-        {
-            Links = new List<Link.Link>();
-        }
+                isIndexed: true) { }
     }
 }

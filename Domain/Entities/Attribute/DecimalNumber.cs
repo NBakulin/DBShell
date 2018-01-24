@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Domain.Services.Validators;
 
 namespace Domain.Entities.Attribute
 {
@@ -19,7 +18,6 @@ namespace Domain.Entities.Attribute
         protected internal DecimalNumber() { }
 
         protected internal DecimalNumber(
-            IAttributeValidator validator,
             string name,
             TSQLType sqlType,
             int? precision = null,
@@ -30,7 +28,6 @@ namespace Domain.Entities.Attribute
             string description = null,
             string formSettings = null)
             : base(
-                validator,
                 name: name,
                 sqlType: sqlType,
                 isNullable: isNullable,

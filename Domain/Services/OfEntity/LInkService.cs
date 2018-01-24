@@ -57,9 +57,7 @@ namespace Domain.Services.OfEntity
                 masterAttribute: primaryKey,
                 slaveAttribute: foreignKey,
                 isDeleteCascade: isCascadeDelete,
-                isUpdateCascade: isCascadeUpdate);
-
-            primaryKey.Links.Add(link);
+                isUpdateCascade: isCascadeUpdate) {MasterAttributeId = masterTable.Id, SlaveAttributeId = slaveTable.Id};
 
             _linkRepository.Add(link);
         }
@@ -96,7 +94,7 @@ namespace Domain.Services.OfEntity
                     .All()
                     .SingleOrDefault(l =>
                         l.MasterAttributeId == masterTable.Id &&
-                        l.SlaveAttribute.Id == slaveTable.Id);
+                        l.SlaveAttributeId == slaveTable.Id);
         }
 
         public bool IsDeployable(Link entity)
@@ -133,7 +131,7 @@ namespace Domain.Services.OfEntity
                         .All()
                         .SingleOrDefault(l =>
                             l.MasterAttributeId == masterTable.Id &&
-                            l.SlaveAttribute.Id == slaveForeignKey.Id)
+                            l.SlaveAttributeId == slaveForeignKey.Id)
                     where link != null
                     select slaveForeignKey)
                 .FirstOrDefault();

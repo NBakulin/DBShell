@@ -272,7 +272,7 @@ namespace Domain.Services
 
             IEnumerable<Attribute> attributes = _tableService.GetTableAttributes(table);
 
-            
+
             PrimaryKey primaryKey = attributes.OfType<PrimaryKey>().Single();
 
             _linkService
@@ -288,7 +288,7 @@ namespace Domain.Services
                 .ToList()
                 .ForEach(l =>
                 {
-                    if (foreignKeys.Any(fk => fk.Id == l.SlaveAttribute.Id))
+                    if (foreignKeys.Any(fk => fk.Id == l.SlaveAttributeId))
                     {
                         DropDeployedLink(l);
                     }
@@ -302,7 +302,8 @@ namespace Domain.Services
 
         public void DropDeployedAttribute(Attribute attribute)
         {
-            switch (attribute) {
+            switch (attribute)
+            {
                 case null:
                     throw new ArgumentNullException(nameof(attribute));
                 case PrimaryKey _:
@@ -324,8 +325,8 @@ namespace Domain.Services
         {
             if (link is null)
                 throw new ArgumentNullException(nameof(link));
-            
-            ForeignKey foreignKey = _attributeService.GetById(link.SlaveAttribute.Id) as ForeignKey;
+
+            ForeignKey foreignKey = _attributeService.GetById(link.SlaveAttributeId) as ForeignKey;
 
             Table table = _tableService.GetTableById(foreignKey.TableId);
 

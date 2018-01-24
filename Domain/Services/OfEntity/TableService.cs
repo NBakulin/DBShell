@@ -49,9 +49,7 @@ namespace Domain.Services.OfEntity
             if (!_tableValidator.IsUniqueName(database: database, tableName: tableName))
                 throw new ArgumentException($"The table {tableName} is already exists in the database {database.Name}.");
 
-            Table table = new Table(tableName);
-
-            database.AddTable(table);
+            Table table = new Table(tableName) {DatabaseId = database.Id};
 
             _tableRepository.Add(table);
 
@@ -64,6 +62,8 @@ namespace Domain.Services.OfEntity
                 throw new ArgumentNullException(nameof(table));
             if (tableName is null)
                 throw new ArgumentNullException(nameof(tableName));
+
+            if (table.Name == tableName) return;
 
             if (!_tableValidator.IsValidName(tableName: tableName))
                 throw new ArgumentException($"Invalid table name {tableName}.");

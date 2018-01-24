@@ -22,7 +22,7 @@ namespace Domain.Services.Validators
                     .All()
                     .All(l =>
                         l.MasterAttributeId != masterTable.Id &&
-                        l.SlaveAttribute.Id != slaveTable.Id);
+                        l.SlaveAttributeId != slaveTable.Id);
         }
     }
 }

@@ -1,19 +1,23 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Domain.Entities;
+using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Repositories;
+using Attribute = Domain.Entities.Attribute.Attribute;
 
 namespace Domain.Services.ExpressionProviders
 {
     public sealed class LinkSqlExpressionProvider : ILinkSqlExpressionProvider
     {
         private readonly IRepository<Table> _tableRepository;
+        private readonly IRepository<Attribute> _attributeRepository;
 
         public LinkSqlExpressionProvider(
-            IRepository<Table> tableRepository)
+            IRepository<Table> tableRepository,
+            IRepository<Attribute> attributeRepository)
         {
             _tableRepository = tableRepository;
+            _attributeRepository = attributeRepository;
         }
 
         public string Create(Link link)
@@ -39,24 +43,20 @@ namespace Domain.Services.ExpressionProviders
 
         private string GetSlaveTableName(Link link)
         {
-            return
-                _tableRepository
-                    .All()
-                    .SingleOrDefault(t => t.Id == link.SlaveAttribute.TableId)
-                    ?.Name
-                ?? throw new ArgumentNullException(link.ToString(),
-                    "Failure when loading \"slave\" table of the link.");
+            ForeignKey foreignKey = _attributeRepository.All().Single(a => a.Id == link.SlaveAttributeId) as ForeignKey;
+
+            Table table = _tableRepository.All().Single(t => t.Id == foreignKey.TableId);
+
+            return table.Name;
         }
 
         private string GetMasterTableName(Link link)
         {
-            return
-                _tableRepository
-                    .All()
-                    .SingleOrDefault(t => t.Id == link.MasterAttribute.TableId)
-                    ?.Name
-                ?? throw new ArgumentNullException(link.ToString(),
-                    "Failure when loading \"master\" table of the link.");
+            PrimaryKey primaryKey = _attributeRepository.All().Single(a => a.Id == link.MasterAttributeId) as PrimaryKey;
+
+            Table table = _tableRepository.All().Single(t => t.Id == primaryKey.TableId);
+
+            return table.Name;
         }
     }
 }

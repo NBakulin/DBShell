@@ -20,8 +20,6 @@ namespace Domain.Entities
 
         protected internal IList<Table> Tables { get; protected set; }
 
-        protected internal IList<Link.Link> Links { get; protected set; }
-
         protected internal string ConnectionString =>
             $"Data Source={ServerName};Initial Catalog={DeployName};Integrated Security=True";
 
@@ -34,9 +32,6 @@ namespace Domain.Entities
             DeployName = Name;
 
             ServerName = serverName ?? throw new ArgumentNullException(nameof(serverName));
-
-            Links = new List<Link.Link>();
-            Tables = new List<Table>();
         }
 
         protected internal void Rename(string name)
@@ -54,16 +49,6 @@ namespace Domain.Entities
             }
 
             OnModified();
-        }
-
-        protected internal void AddTable(Table table)
-        {
-            Tables.Add(table);
-        }
-
-        protected internal void RemoveTable(Table table)
-        {
-            Tables.Remove(table);
         }
     }
 }
