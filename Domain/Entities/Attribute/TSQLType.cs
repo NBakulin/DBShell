@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities.Attribute
+﻿// ReSharper disable InconsistentNaming
+
+namespace Domain.Entities.Attribute
 {
     public enum TSQLType
     {
@@ -20,7 +22,7 @@
 
         // unicode strings
         NCHAR,
-        NVARCHAR,
+        NVARCHAR
 
         /*
         // Date and time

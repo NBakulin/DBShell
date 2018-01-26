@@ -13,8 +13,6 @@ namespace Domain.Services.Validators
 {
     public class AttributeValidator : IAttributeValidator
     {
-        private readonly IRepository<Attribute> _attributeRepository;
-
         private static readonly Dictionary<Type, HashSet<TSQLType>> Types = new Dictionary<Type, HashSet<TSQLType>>
         {
             {
@@ -76,6 +74,8 @@ namespace Domain.Services.Validators
             }
         };
 
+        private readonly IRepository<Attribute> _attributeRepository;
+
         public AttributeValidator(
             IRepository<Attribute> attributeRepository)
         {
@@ -84,7 +84,7 @@ namespace Domain.Services.Validators
 
         public bool IsValidName(string name)
         {
-            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(name);
+            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(input: name);
         }
 
         public bool IsUniqueName(Table table, string attributeName)
@@ -98,7 +98,7 @@ namespace Domain.Services.Validators
 
         public bool IsValidType(Type attributeType, TSQLType sqlType)
         {
-            return Types[attributeType]?.Contains(sqlType) ?? false;
+            return Types[key: attributeType]?.Contains(item: sqlType) ?? false;
         }
     }
 }

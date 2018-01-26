@@ -12,12 +12,11 @@ namespace Domain.Services.OfEntity
 {
     public class LInkService : ILinkService
     {
-        private readonly IRepository<Link> _linkRepository;
         private readonly IRepository<Attribute> _attributeRepository;
-        private readonly IRepository<Table> _tableRepository;
-        private readonly ILinkValidator _linkValidator;
-
         private readonly IAttributeService _attributeService;
+        private readonly IRepository<Link> _linkRepository;
+        private readonly ILinkValidator _linkValidator;
+        private readonly IRepository<Table> _tableRepository;
 
         public LInkService(
             IRepository<Link> linkRepository,
@@ -49,7 +48,7 @@ namespace Domain.Services.OfEntity
 
             int foreignKeyId = _attributeService.AddForeignKey(masterTable: masterTable, slaveTable: slaveTable);
 
-            ForeignKey foreignKey = _attributeService.GetById(foreignKeyId) as ForeignKey;
+            ForeignKey foreignKey = _attributeService.GetById(id: foreignKeyId) as ForeignKey;
 
             PrimaryKey primaryKey = GetPrimaryKey(table: masterTable);
 
@@ -59,12 +58,12 @@ namespace Domain.Services.OfEntity
                 isDeleteCascade: isCascadeDelete,
                 isUpdateCascade: isCascadeUpdate) {MasterAttributeId = masterTable.Id, SlaveAttributeId = slaveTable.Id};
 
-            _linkRepository.Add(link);
+            _linkRepository.Add(entity: link);
         }
 
         public void Remove(Link link)
         {
-            _linkRepository.Remove(link);
+            _linkRepository.Remove(entity: link);
         }
 
         public IEnumerable<Link> GetDatabaseLinks(Database database)
@@ -93,8 +92,8 @@ namespace Domain.Services.OfEntity
                 _linkRepository
                     .All()
                     .SingleOrDefault(l =>
-                        l.MasterAttributeId == masterTable.Id &&
-                        l.SlaveAttributeId == slaveTable.Id);
+                                         l.MasterAttributeId == masterTable.Id &&
+                                         l.SlaveAttributeId == slaveTable.Id);
         }
 
         public bool IsDeployable(Link entity)
@@ -126,14 +125,14 @@ namespace Domain.Services.OfEntity
         public ForeignKey GetForeignKey(Table masterTable, Table slaveTable)
         {
             return
-                (from slaveForeignKey in GetForeignKeys(slaveTable).ToList()
-                    let link = _linkRepository
-                        .All()
-                        .SingleOrDefault(l =>
-                            l.MasterAttributeId == masterTable.Id &&
-                            l.SlaveAttributeId == slaveForeignKey.Id)
-                    where link != null
-                    select slaveForeignKey)
+                (from slaveForeignKey in GetForeignKeys(table: slaveTable).ToList()
+                 let link = _linkRepository
+                            .All()
+                            .SingleOrDefault(l =>
+                                                 l.MasterAttributeId == masterTable.Id &&
+                                                 l.SlaveAttributeId == slaveForeignKey.Id)
+                 where link != null
+                 select slaveForeignKey)
                 .FirstOrDefault();
         }
     }

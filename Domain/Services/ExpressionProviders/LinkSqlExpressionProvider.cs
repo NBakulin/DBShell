@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using Domain.Entities;
+using Domain.Entities.Attribute;
 using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Repositories;
-using Attribute = Domain.Entities.Attribute.Attribute;
 
 namespace Domain.Services.ExpressionProviders
 {
     public sealed class LinkSqlExpressionProvider : ILinkSqlExpressionProvider
     {
-        private readonly IRepository<Table> _tableRepository;
         private readonly IRepository<Attribute> _attributeRepository;
+        private readonly IRepository<Table> _tableRepository;
 
         public LinkSqlExpressionProvider(
             IRepository<Table> tableRepository,
@@ -22,7 +22,7 @@ namespace Domain.Services.ExpressionProviders
 
         public string Create(Link link)
         {
-            var (master, slave) = (GetMasterTableName(link), GetSlaveTableName(link));
+            var (master, slave) = (GetMasterTableName(link: link), GetSlaveTableName(link: link));
 
             return
                 $"ALTER TABLE {slave} \n" +
@@ -34,7 +34,7 @@ namespace Domain.Services.ExpressionProviders
 
         public string Remove(Link link)
         {
-            var (master, slave) = (GetMasterTableName(link), GetSlaveTableName(link));
+            var (master, slave) = (GetMasterTableName(link: link), GetSlaveTableName(link: link));
 
             return
                 $"ALTER TABLE {slave} \n" +

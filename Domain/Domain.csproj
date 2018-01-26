@@ -63,10 +63,11 @@
     <Compile Include="Entities\Link\Link.cs" />
     <Compile Include="Entities\Link\LinkPointType.cs" />
     <Compile Include="Entities\IEntity.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\Table.cs" />
     <Compile Include="Repositories\EntityFrameworkRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Services\ExpressionProviders\DeploySqlExpressionProvider.cs" />
+    <Compile Include="Services\ExpressionProviders\IDeploySqlExpressionProvider.cs" />
     <Compile Include="Services\ExpressionProviders\ISystemExpressionProvider.cs" />
     <Compile Include="Services\OfEntity\AttributeService.cs" />
     <Compile Include="Services\ExpressionProviders\AttributeSqlExpressionProvider.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="Services\Validators\AttributeValidator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

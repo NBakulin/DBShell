@@ -6,35 +6,6 @@ namespace Domain.Entities.Attribute
 {
     public abstract class Attribute : Entity
     {
-        [Required]
-        [MaxLength(64)]
-        public string Name { get; protected set; }
-
-        [MaxLength(64)]
-        public string DeployName { get; protected set; }
-
-        [Required]
-        public TSQLType SqlType { get; protected set; }
-
-        [Required]
-        public bool IsNullable { get; protected set; }
-
-        [Required]
-        public bool IsPrimaryKey { get; protected set; }
-
-        public bool IsIndexed { get; protected set; }
-
-        [MaxLength(256)]
-        public string Description { get; protected set; }
-
-        [MaxLength(1024)]
-        [Column(TypeName = "xml")]
-        public string FormSettings { get; protected set; }
-
-        public int TableId { get; protected internal set; }
-        protected internal Table Table { get; protected set; }
-
-
         protected Attribute() { }
 
         protected Attribute(
@@ -47,31 +18,45 @@ namespace Domain.Entities.Attribute
             string formSettings = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            DeployName = Name;
 
-            ChangeType(sqlType);
+            ChangeType(type: sqlType);
 
-            ChangeIsNullable(isNullable);
-            ChangeIsPrimaryKey(isPrimaryKey);
-            ChangeIsIndexed(isIndexed);
+            ChangeIsNullable(isNullable: isNullable);
+            ChangeIsPrimaryKey(isPrimaryKey: isPrimaryKey);
+            ChangeIsIndexed(isIndexed: isIndexed);
 
-            ChangeDescriotion(description);
-            ChangeFormSettings(formSettings);
+            ChangeDescriotion(description: description);
+            ChangeFormSettings(formSettings: formSettings);
         }
+
+        [Required]
+        [MaxLength(length: 64)]
+        public string Name { get; protected set; }
+
+        [Required]
+        public TSQLType SqlType { get; protected set; }
+
+        [Required]
+        public bool IsNullable { get; protected set; }
+
+        [Required]
+        public bool IsPrimaryKey { get; protected set; }
+
+        public bool IsIndexed { get; protected set; }
+
+        [MaxLength(length: 256)]
+        public string Description { get; protected set; }
+
+        [MaxLength(length: 1024)]
+        [Column(TypeName = "xml")]
+        public string FormSettings { get; protected set; }
+
+        public int TableId { get; protected internal set; }
+        protected internal Table Table { get; protected set; }
 
         public void Rename(string name)
         {
-            if (name is null)
-                throw new ArgumentNullException(nameof(name));
-
-            {
-                if (!IsModified)
-                {
-                    DeployName = Name;
-                }
-
-                Name = name;
-            }
+            Name = name ?? throw new ArgumentNullException(nameof(name));
 
             OnModified();
         }

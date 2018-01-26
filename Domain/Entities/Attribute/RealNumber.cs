@@ -9,9 +9,6 @@ namespace Domain.Entities.Attribute
         private const int MaxBitCapacity = 53;
         private const int MinBitCapacity = 1;
 
-        [Range(MinBitCapacity, MaxBitCapacity)]
-        public int? BitCapacity { get; protected set; }
-
 
         protected internal RealNumber() { }
 
@@ -33,8 +30,11 @@ namespace Domain.Entities.Attribute
                 description: description,
                 formSettings: formSettings)
         {
-            ChangeBitCapacity(bitCapacity);
+            ChangeBitCapacity(bitCapacity: bitCapacity);
         }
+
+        [Range(minimum: MinBitCapacity, maximum: MaxBitCapacity)]
+        public int? BitCapacity { get; protected set; }
 
         public void ChangeBitCapacity(int? bitCapacity)
         {

@@ -6,6 +6,8 @@ namespace Domain.Services.ExpressionProviders
     {
         string Create(Attribute attribute);
 
+        string Rename(Attribute attribute, string newValidName);
+
         string Update(Attribute attribute);
 
         string Delele(Attribute attribute);

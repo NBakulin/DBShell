@@ -41,16 +41,21 @@ namespace Domain.Services.ExpressionProviders
                     .All()
                     .Where(a => a.TableId == table.Id)
                     .ToList()
-                    .Aggregate(string.Empty, (total, attribute) =>
-                        $"{total}, \n\t{_attributeExpressionProvider.FullDefinition(attribute)}")
-                    .Remove(0, 3) +
+                    .Aggregate(seed: string.Empty, func: (total, attribute) =>
+                                   $"{total}, \n\t{_attributeExpressionProvider.FullDefinition(attribute: attribute)}")
+                    .Remove(startIndex: 0, count: 3) +
                 "\n)";
+        }
+
+        public string Rename(Table table, string newValidName)
+        {
+            return
+                $"EXEC sp_rename \'{table.Name}\', \'{newValidName}\'";
         }
 
         public string Update(Table table)
         {
-            return
-                $"EXEC sp_rename \'{table.DeployName}\', \'{table.Name}\'";
+            return ";";
         }
 
         public string Remove(Table table)

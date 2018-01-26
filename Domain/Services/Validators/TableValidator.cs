@@ -16,7 +16,7 @@ namespace Domain.Services.Validators
 
         public bool IsValidName(string tableName)
         {
-            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(tableName);
+            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(input: tableName);
         }
 
         public bool IsUniqueName(Database database, string tableName)

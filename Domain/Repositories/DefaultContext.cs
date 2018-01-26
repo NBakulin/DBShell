@@ -1,8 +1,8 @@
 ﻿using System.Data.Entity;
 using Domain.Entities;
-using Domain.Entities.Attribute;
 using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
+using Attribute = Domain.Entities.Attribute.Attribute;
 using Database = Domain.Entities.Database;
 
 namespace Domain.Repositories
@@ -11,7 +11,7 @@ namespace Domain.Repositories
     {
         public DefaultContext() : base("DefaultContext")
         {
-            Database.Log = System.Console.WriteLine;
+            Database.Log = s => System.Diagnostics.Debug.WriteLine(message: s);
         }
 
 
@@ -55,14 +55,14 @@ namespace Domain.Repositories
                 .HasMany(pk => pk.Links)
                 .WithRequired(l => l.MasterAttribute)
                 .HasForeignKey(l => l.MasterAttributeId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(value: false);
 
             modelBuilder
                 .Entity<ForeignKey>()
                 .HasMany(fk => fk.Links)
                 .WithRequired(l => l.SlaveAttribute)
                 .HasForeignKey(l => l.SlaveAttributeId)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(value: false);
         }
     }
 }

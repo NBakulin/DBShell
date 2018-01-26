@@ -6,18 +6,17 @@ using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Repositories;
 using Domain.Services.Validators;
+using Attribute = Domain.Entities.Attribute.Attribute;
 
 namespace Domain.Services.OfEntity
 {
     public class TableService : ITableService
     {
-        private readonly IRepository<Table> _tableRepository;
-        private readonly IRepository<Database> _databaseRepository;
-        private readonly IRepository<Entities.Attribute.Attribute> _attributeRepository;
-        private readonly ITableValidator _tableValidator;
-
+        private readonly IRepository<Attribute> _attributeRepository;
         private readonly IAttributeService _attributeService;
         private readonly ILinkService _linkService;
+        private readonly IRepository<Table> _tableRepository;
+        private readonly ITableValidator _tableValidator;
 
 
         public TableService(
@@ -25,14 +24,12 @@ namespace Domain.Services.OfEntity
             IAttributeService attributeService,
             ITableValidator tableValidator,
             ILinkService linkService,
-            IRepository<Database> databaseRepository,
-            IRepository<Entities.Attribute.Attribute> attributeRepository)
+            IRepository<Attribute> attributeRepository)
         {
             _tableRepository = tableRepository;
             _attributeService = attributeService;
             _tableValidator = tableValidator;
             _linkService = linkService;
-            _databaseRepository = databaseRepository;
             _attributeRepository = attributeRepository;
         }
 
@@ -49,11 +46,11 @@ namespace Domain.Services.OfEntity
             if (!_tableValidator.IsUniqueName(database: database, tableName: tableName))
                 throw new ArgumentException($"The table {tableName} is already exists in the database {database.Name}.");
 
-            Table table = new Table(tableName) {DatabaseId = database.Id};
+            Table table = new Table(name: tableName) {DatabaseId = database.Id};
 
-            _tableRepository.Add(table);
+            _tableRepository.Add(entity: table);
 
-            _attributeService.AddPrimaryKey(table, "Id");
+            _attributeService.AddPrimaryKey(table: table, primaryKeyName: "Id");
         }
 
         public void Rename(Table table, string tableName)
@@ -63,22 +60,9 @@ namespace Domain.Services.OfEntity
             if (tableName is null)
                 throw new ArgumentNullException(nameof(tableName));
 
-            if (table.Name == tableName) return;
+            table.Rename(name: tableName);
 
-            if (!_tableValidator.IsValidName(tableName: tableName))
-                throw new ArgumentException($"Invalid table name {tableName}.");
-
-            Database database =
-                _databaseRepository
-                    .All()
-                    .SingleOrDefault(db => db.Id == table.DatabaseId);
-
-            if (!_tableValidator.IsUniqueName(database: database, tableName: tableName))
-                throw new ArgumentException($"The table {tableName} is already exists in the database {database.Name}.");
-
-            table.Rename(tableName);
-
-            _tableRepository.Update(table);
+            _tableRepository.Update(entity: table);
         }
 
         public IEnumerable<Table> GetDatabaseTables(Database database)
@@ -94,7 +78,7 @@ namespace Domain.Services.OfEntity
             return _linkService.GetDatabaseLinks(database: database);
         }
 
-        public IEnumerable<Entities.Attribute.Attribute> GetTableAttributes(Table table)
+        public IEnumerable<Attribute> GetTableAttributes(Table table)
         {
             return
                 _attributeRepository
@@ -126,7 +110,7 @@ namespace Domain.Services.OfEntity
 
         public void RemoveTable(Table table)
         {
-            _tableRepository.Remove(table);
+            _tableRepository.Remove(entity: table);
         }
 
         public void RemoveLink(Link link)
@@ -137,20 +121,20 @@ namespace Domain.Services.OfEntity
         public bool HasPrimaryKey(Table table)
         {
             return
-                GetTableAttributes(table)
+                GetTableAttributes(table: table)
                     .Any(a => a is PrimaryKey);
         }
 
         public bool IsDeployable(Table table)
         {
-            return HasPrimaryKey(table);
+            return HasPrimaryKey(table: table);
         }
 
         public void OffModified(Table table)
         {
             table.OffModified();
 
-            _tableRepository.Update(table);
+            _tableRepository.Update(entity: table);
         }
     }
 }

@@ -19,29 +19,23 @@ namespace Domain.Services.ExpressionProviders
             _tableRepository = tableRepository;
         }
 
-        protected Table GetParentTable(Attribute attribute)
-        {
-            return
-                _tableRepository
-                    .All()
-                    .Single(t => t.Id == attribute.TableId);
-        }
-
         public string Create(Attribute attribute)
         {
             return
                 $"ALTER TABLE {GetParentTable(attribute: attribute).Name} \n" +
-                $"\tADD {FullDefinition(attribute)}";
+                $"\tADD {FullDefinition(attribute: attribute)}";
+        }
+
+        public string Rename(Attribute attribute, string newValidName)
+        {
+            return
+                "EXEC sp_rename \n" +
+                $"\'{GetParentTable(attribute: attribute).Name}.{attribute.Name}\', \'{newValidName}\', \'COLUMN\'";
         }
 
         public string Update(Attribute attribute)
         {
-            return
-                "EXEC sp_rename \n" +
-                $"\'{GetParentTable(attribute: attribute).DeployName}.{attribute.DeployName}\', \'{attribute.Name}\', \'COLUMN\'";
-
-            //$"ALTER TABLE {GetParentTable(attribute: attribute).Name} \n" +
-            //$"\tALTER COLUMN {attribute.DeployName} {FullDefinition(attribute)}";
+            return ";";
         }
 
         public string Delele(Attribute attribute)
@@ -55,12 +49,20 @@ namespace Domain.Services.ExpressionProviders
         public string FullDefinition(Attribute attribute)
         {
             return
-                $"{attribute.Name} {GetTypeString(attribute)} {GetIsNullableString(attribute)} {GetIsPrimaryKeyString(attribute)}";
+                $"{attribute.Name} {GetTypeString(attribute: attribute)} {GetIsNullableString(attribute: attribute)} {GetIsPrimaryKeyString(attribute: attribute)}";
+        }
+
+        protected Table GetParentTable(Attribute attribute)
+        {
+            return
+                _tableRepository
+                    .All()
+                    .Single(t => t.Id == attribute.TableId);
         }
 
         protected string GetTypeString(Attribute attribute)
         {
-            string defaultTypeString = Enum.GetName(typeof(TSQLType), attribute.SqlType);
+            string defaultTypeString = Enum.GetName(typeof(TSQLType), value: attribute.SqlType);
 
             switch (attribute)
             {

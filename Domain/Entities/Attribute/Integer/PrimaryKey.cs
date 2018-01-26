@@ -4,8 +4,6 @@ namespace Domain.Entities.Attribute.Integer
 {
     public class PrimaryKey : IntegerNumber
     {
-        public IList<Link.Link> Links { get; protected set; }
-
         protected internal PrimaryKey() { }
 
         protected internal PrimaryKey(
@@ -16,5 +14,7 @@ namespace Domain.Entities.Attribute.Integer
                 isNullable: false,
                 isPrimaryKey: true,
                 isIndexed: true) { }
+
+        public IList<Link.Link> Links { get; protected set; }
     }
 }

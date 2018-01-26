@@ -14,34 +14,16 @@ namespace Domain.Services.OfEntity
     public class AttributeService : IAttributeService
     {
         private const int MaxSlaveTableLinks = 10;
-
-        private readonly IRepository<Table> _tableRepository;
         private readonly IRepository<Attribute> _attributeRepository;
 
         private readonly IAttributeValidator _attributeValidator;
 
         public AttributeService(
             IRepository<Attribute> attributeRepository,
-            IAttributeValidator attributeValidator,
-            IRepository<Table> tableRepository)
+            IAttributeValidator attributeValidator)
         {
             _attributeRepository = attributeRepository;
             _attributeValidator = attributeValidator;
-            _tableRepository = tableRepository;
-        }
-
-        private void CheckAttributeName(Table table, string name)
-        {
-            if (table is null)
-                throw new ArgumentNullException(nameof(table));
-            if (name is null)
-                throw new ArgumentNullException(nameof(name));
-
-            if (!_attributeValidator.IsValidName(name))
-                throw new ArgumentException($"Invalid primary key name {name}.");
-
-            if (!_attributeValidator.IsUniqueName(table: table, attributeName: name))
-                throw new InvalidOperationException($"The attribute {name} is already exists.");
         }
 
         public int AddForeignKey(
@@ -60,11 +42,9 @@ namespace Domain.Services.OfEntity
                 int uniqueForeignKeyEnding = 1;
 
                 while (
-                    !_attributeValidator.IsUniqueName(slaveTable, localForegnKeyName) &&
+                    !_attributeValidator.IsUniqueName(table: slaveTable, attributeName: localForegnKeyName) &&
                     uniqueForeignKeyEnding <= MaxSlaveTableLinks)
-                {
                     localForegnKeyName = $"{localForegnKeyName}{uniqueForeignKeyEnding++}";
-                }
 
                 if (uniqueForeignKeyEnding > MaxSlaveTableLinks)
                     throw new ArgumentException($"The amount of links ({MaxSlaveTableLinks}) is over.");
@@ -76,7 +56,7 @@ namespace Domain.Services.OfEntity
                 name: foregnKeyName,
                 isNullable: true) {TableId = slaveTable.Id};
 
-            _attributeRepository.Add(foreignKey);
+            _attributeRepository.Add(entity: foreignKey);
 
             return foreignKey.Id;
         }
@@ -93,9 +73,9 @@ namespace Domain.Services.OfEntity
                 .Any(a => a is PrimaryKey))
                 throw new InvalidOperationException($"The table {table.Name} already has a primary key.");
 
-            PrimaryKey primaryKey = new PrimaryKey(primaryKeyName) {TableId = table.Id};
+            PrimaryKey primaryKey = new PrimaryKey(name: primaryKeyName) {TableId = table.Id};
 
-            _attributeRepository.Add(primaryKey);
+            _attributeRepository.Add(entity: primaryKey);
         }
 
         public void AddDecimalNumber(
@@ -123,7 +103,7 @@ namespace Domain.Services.OfEntity
                 description: description,
                 formSettings: formForperties) {TableId = table.Id};
 
-            _attributeRepository.Add(decimalNumber);
+            _attributeRepository.Add(entity: decimalNumber);
         }
 
         public void AddIntegerNumber(
@@ -147,7 +127,7 @@ namespace Domain.Services.OfEntity
                 description: description,
                 formSettings: formForperties) {TableId = table.Id};
 
-            _attributeRepository.Add(integer);
+            _attributeRepository.Add(entity: integer);
         }
 
         public void AddRealNumber(
@@ -173,7 +153,7 @@ namespace Domain.Services.OfEntity
                 description: description,
                 formSettings: formForperties) {TableId = table.Id};
 
-            _attributeRepository.Add(realNumber);
+            _attributeRepository.Add(entity: realNumber);
         }
 
         public void AddString(
@@ -201,7 +181,7 @@ namespace Domain.Services.OfEntity
                 description: description,
                 formSettings: formProperties) {TableId = table.Id};
 
-            _attributeRepository.Add(attribute);
+            _attributeRepository.Add(entity: attribute);
         }
 
         public IEnumerable<Attribute> GetAll()
@@ -217,7 +197,7 @@ namespace Domain.Services.OfEntity
                 throw new ArgumentNullException(nameof(attribute));
 
             _attributeRepository
-                .Remove(attribute);
+                .Remove(entity: attribute);
         }
 
         public void Rename(Attribute attribute, string name)
@@ -227,22 +207,9 @@ namespace Domain.Services.OfEntity
             if (name is null)
                 throw new ArgumentNullException(nameof(name));
 
-            if (attribute.Name == name) return;
+            attribute.Rename(name: name);
 
-            if (!_attributeValidator.IsValidName(name))
-                throw new ArgumentException($"Invalid primary key name {name}.");
-
-            Table table =
-                _tableRepository
-                    .All()
-                    .SingleOrDefault(t => t.Id == attribute.TableId);
-
-            if (!_attributeValidator.IsUniqueName(table: table, attributeName: name))
-                throw new InvalidOperationException($"The attribute {name} is already exists.");
-
-            attribute.Rename(name);
-
-            _attributeRepository.Update(attribute);
+            _attributeRepository.Update(entity: attribute);
         }
 
         public Attribute GetByName(Table table, string name)
@@ -279,7 +246,21 @@ namespace Domain.Services.OfEntity
         {
             attribute.OffModified();
 
-            _attributeRepository.Update(attribute);
+            _attributeRepository.Update(entity: attribute);
+        }
+
+        private void CheckAttributeName(Table table, string name)
+        {
+            if (table is null)
+                throw new ArgumentNullException(nameof(table));
+            if (name is null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (!_attributeValidator.IsValidName(name: name))
+                throw new ArgumentException($"Invalid primary key name {name}.");
+
+            if (!_attributeValidator.IsUniqueName(table: table, attributeName: name))
+                throw new InvalidOperationException($"The attribute {name} is already exists.");
         }
     }
 }

@@ -4,8 +4,6 @@ namespace Domain.Entities.Attribute.Integer
 {
     public class ForeignKey : IntegerNumber
     {
-        public IList<Link.Link> Links { get; protected set; }
-
         protected internal ForeignKey() { }
 
         protected internal ForeignKey(
@@ -17,5 +15,7 @@ namespace Domain.Entities.Attribute.Integer
                 isNullable: isNullable,
                 isPrimaryKey: false,
                 isIndexed: true) { }
+
+        public IList<Link.Link> Links { get; protected set; }
     }
 }

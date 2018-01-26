@@ -21,8 +21,8 @@ namespace Domain.Services.Validators
                 _linkRepository
                     .All()
                     .All(l =>
-                        l.MasterAttributeId != masterTable.Id &&
-                        l.SlaveAttributeId != slaveTable.Id);
+                             l.MasterAttributeId != masterTable.Id &&
+                             l.SlaveAttributeId != slaveTable.Id);
         }
     }
 }

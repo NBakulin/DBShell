@@ -8,6 +8,8 @@ namespace Domain.Services.ExpressionProviders
 
         string CreateFull(Table table);
 
+        string Rename(Table table, string newValidName);
+
         string Update(Table table);
 
         string Remove(Table table);

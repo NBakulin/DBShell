@@ -7,7 +7,7 @@ namespace Domain.Services
         void Execute(string sqlConnectionString, string sqlExpression);
         void ExecuteAsDefault(string serverName, string sqlExpression);
         T ExecuteScalar<T>(string sqlConnectionString, string sqlExpression);
-        T ExecuteScalarAsDefault<T>(string sqlConnectionString, string sqlExpression);
+        T ExecuteScalarAsDefault<T>(string serverName, string sqlExpression);
 
 
         IEnumerable<T1> ExecuteReader<T1>(string connectionString, string sqlExpression);

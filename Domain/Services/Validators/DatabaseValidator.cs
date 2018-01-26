@@ -17,7 +17,7 @@ namespace Domain.Services.Validators
 
         public bool IsValidName(string name)
         {
-            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(name);
+            return new Regex("^[A-Za-zА-Яа-я_][\\wА-Яа-я_]{0,63}$").IsMatch(input: name);
         }
 
         public bool IsUniqueName(string name)
@@ -30,7 +30,7 @@ namespace Domain.Services.Validators
 
         public bool IsValidServerName(string serverName)
         {
-            return new Regex("^[\\w_.\\\\]{0,63}$").IsMatch(serverName);
+            return new Regex("^[\\w_.\\\\]{0,63}$").IsMatch(input: serverName);
         }
     }
 }

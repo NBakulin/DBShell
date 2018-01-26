@@ -29,9 +29,7 @@ namespace Domain.Services.OfEntity
             return
                 _databaseRepository
                     .All()
-                    .Any(db =>
-                        db.Name == databaseName ||
-                        db.DeployName == databaseName);
+                    .Any(db => db.Name == databaseName);
         }
 
         public void Add(string databaseName, string serverName)
@@ -50,9 +48,9 @@ namespace Domain.Services.OfEntity
             if (!_databaseValidator.IsValidServerName(serverName: serverName))
                 throw new ArgumentException($"Invalid server databaseName {serverName}.", nameof(serverName));
 
-            Database database = new Database(databaseName, serverName);
+            Database database = new Database(name: databaseName, serverName: serverName);
 
-            _databaseRepository.Add(database);
+            _databaseRepository.Add(entity: database);
         }
 
         public Database GetByName(string name)
@@ -86,24 +84,16 @@ namespace Domain.Services.OfEntity
             if (databaseName is null)
                 throw new ArgumentNullException(nameof(databaseName));
 
-            if (database.Name == databaseName) return;
+            database.Rename(name: databaseName);
 
-            if (!_databaseValidator.IsValidName(name: databaseName))
-                throw new ArgumentException($"Invalid database tableName {databaseName}.", nameof(databaseName));
-
-            if (!_databaseValidator.IsUniqueName(name: databaseName))
-                throw new ArgumentException($"Database with tableName {databaseName} is already exists.", nameof(databaseName));
-
-            database.Rename(databaseName);
-
-            _databaseRepository.Update(database);
+            _databaseRepository.Update(entity: database);
         }
 
         public void OffModified(Database database)
         {
             database.OffModified();
 
-            _databaseRepository.Update(database);
+            _databaseRepository.Update(entity: database);
         }
 
         public void Remove(Database database)
@@ -112,9 +102,9 @@ namespace Domain.Services.OfEntity
             _tableService
                 .GetDatabaseLinks(database: database)
                 .ToList()
-                .ForEach(l => _tableService.RemoveLink(l));
+                .ForEach(l => _tableService.RemoveLink(tink: l));
 
-            _databaseRepository.Remove(database);
+            _databaseRepository.Remove(entity: database);
         }
 
         public bool IsDeployable(Database entity)

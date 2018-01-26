@@ -18,19 +18,19 @@ namespace Domain.Repositories
 
         void IRepository<TEntity>.Add(TEntity entity)
         {
-            _set.Add(entity);
+            _set.Add(entity: entity);
             _context.SaveChanges();
         }
 
         void IRepository<TEntity>.Update(TEntity entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
+            _context.Entry(entity: entity).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
         void IRepository<TEntity>.Remove(TEntity entity)
         {
-            _set.Remove(entity);
+            _set.Remove(entity: entity);
             _context.SaveChanges();
         }
 

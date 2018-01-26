@@ -7,11 +7,6 @@ namespace Domain.Entities.Attribute
     {
         private const int MaxStringLength = 4000;
 
-        [Range(0, MaxStringLength)]
-        public uint? Length { get; set; }
-
-        public string DefaultValue { get; set; }
-
         protected internal String() { }
 
         protected internal String(
@@ -33,9 +28,14 @@ namespace Domain.Entities.Attribute
                 description: description,
                 formSettings: formSettings)
         {
-            ChangeMaxLength(length);
+            ChangeMaxLength(length: length);
             DefaultValue = defaultValue;
         }
+
+        [Range(minimum: 0, maximum: MaxStringLength)]
+        public uint? Length { get; set; }
+
+        public string DefaultValue { get; set; }
 
         public void ChangeMaxLength(uint? length)
         {

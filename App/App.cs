@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using Domain.Entities;
@@ -7,20 +8,26 @@ using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Services;
 using Domain.Services.OfEntity;
+using Domain.Services.Validators;
 using Attribute = Domain.Entities.Attribute.Attribute;
 
 namespace App
 {
     public class App
     {
+        private readonly IAttributeService _attributeService;
+        private readonly IDatabaseService _databaseService;
+        private readonly IDeployService _deployService;
+        private readonly ILinkService _linkService;
+        private readonly ITableService _tableService;
+
+        private readonly IDatabaseValidator _databaseValidator;
+        private readonly ITableValidator _tableValidator;
+        private readonly IAttributeValidator _attributeValidator;
+
         private readonly string _defaultConnectionString;
         private readonly string _serverName;
 
-        private readonly ILinkService _linkService;
-        private readonly IAttributeService _attributeService;
-        private readonly ITableService _tableService;
-        private readonly IDatabaseService _databaseService;
-        private readonly IDeployService _deployService;
 
         public App(
             string connectionString,
@@ -28,25 +35,31 @@ namespace App
             IDatabaseService databaseService,
             ITableService tableService,
             ILinkService linkService,
-            IDeployService deployService)
+            IDeployService deployService,
+            IDatabaseValidator databaseValidator,
+            ITableValidator tableValidator,
+            IAttributeValidator attributeValidator)
         {
             _defaultConnectionString = connectionString;
             // sorry for this
             _serverName = new Regex("(?:[Dd]ata\\s+[Ss]ource\\s*=\\s*)(?<server>.*?);")
-                .Match(_defaultConnectionString)
-                .Groups["server"]
-                .Value;
+                          .Match(input: _defaultConnectionString)
+                          .Groups["server"]
+                          .Value;
 
             _attributeService = attributeService;
             _databaseService = databaseService;
             _tableService = tableService;
             _linkService = linkService;
             _deployService = deployService;
+            _databaseValidator = databaseValidator;
+            _tableValidator = tableValidator;
+            _attributeValidator = attributeValidator;
         }
 
         public (bool ItWorks, string ErrorMessage) IsConnectionWorks()
         {
-            SqlConnection connection = new SqlConnection(_defaultConnectionString);
+            SqlConnection connection = new SqlConnection(connectionString: _defaultConnectionString);
 
             bool itWorks = false;
             string message = string.Empty;
@@ -72,32 +85,29 @@ namespace App
 
         public bool IsDatabaseExist(string databaseName)
         {
-            return _databaseService.IsDatabaseExist(databaseName);
+            return _databaseService.IsDatabaseExist(databaseName: databaseName);
         }
 
         public void CreateDatabase(string name)
         {
-            _databaseService.Add(name, _serverName);
+            _databaseService.Add(databaseName: name, serverName: _serverName);
         }
 
         public Database GetDatabaseByName(string name)
         {
-            return _databaseService.GetByName(name);
+            return _databaseService.GetByName(name: name);
         }
 
         public Database GetDatabaseById(int id)
         {
-            return _databaseService.GetById(id);
+            return _databaseService.GetById(id: id);
         }
 
         public void RemoveDatabase(Database database)
         {
-            if (_deployService.IsDeployed(database: database))
-            {
-                _deployService.DropDeployedDatabase(database: database);
-            }
+            if (_deployService.IsDeployed(database: database)) _deployService.DropDeployedDatabase(database: database);
 
-            _databaseService.Remove(database);
+            _databaseService.Remove(database: database);
         }
 
         public IEnumerable<Database> GetAllDatabases()
@@ -105,9 +115,27 @@ namespace App
             return _databaseService.GetAll();
         }
 
-        public void RenameDatabase(Database database, string name)
+        public void RenameDatabase(Database database, string databaseName)
         {
-            _databaseService.Rename(database, name);
+            if (database is null)
+                throw new ArgumentNullException(nameof(database));
+            if (databaseName is null)
+                throw new ArgumentNullException(nameof(databaseName));
+
+            if (database.Name == databaseName) return;
+
+            if (!_databaseValidator.IsValidName(name: databaseName))
+                throw new ArgumentException($"Invalid database tableName {databaseName}.", nameof(databaseName));
+
+            if (!_databaseValidator.IsUniqueName(name: databaseName))
+                throw new ArgumentException($"Database with tableName {databaseName} is already exists.", nameof(databaseName));
+
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.RenameDeployedDatabase(database: database, validNewDatabaseName: databaseName);
+            }
+
+            _databaseService.Rename(database: database, name: databaseName);
         }
 
         #endregion
@@ -116,17 +144,17 @@ namespace App
 
         public void AddTable(Database database, string name)
         {
-            _tableService.Add(database, name);
+            _tableService.Add(database: database, tableName: name);
         }
 
         public IEnumerable<Table> GetDatabaseTables(Database database)
         {
-            return _tableService.GetDatabaseTables(database);
+            return _tableService.GetDatabaseTables(database: database);
         }
 
         public Table GetTableByName(Database database, string name)
         {
-            return _tableService.GetTableByName(database, name);
+            return _tableService.GetTableByName(database: database, name: name);
         }
 
         public Table GetTableById(int id)
@@ -136,19 +164,39 @@ namespace App
 
         public void RemoveTable(Table table)
         {
-            Database database = _databaseService.GetById(table.DatabaseId);
+            Database database = _databaseService.GetById(id: table.DatabaseId);
+
+            if (_deployService.IsDeployed(database: database)) _deployService.DropDeployedTable(table: table);
+
+            _tableService.RemoveTable(table: table);
+        }
+
+        public void RenameTable(Table table, string tableName)
+        {
+            if (table is null)
+                throw new ArgumentNullException(nameof(table));
+            if (tableName is null)
+                throw new ArgumentNullException(nameof(tableName));
+
+            if (table.Name == tableName) return;
+
+            if (!_tableValidator.IsValidName(tableName: tableName))
+                throw new ArgumentException($"Invalid table name {tableName}.");
+
+            Database database = _databaseService.GetById(id: table.DatabaseId);
+
+            if (database is null)
+                throw new ArgumentException($"The table {table.Name} does not belog to any database.");
+
+            if (!_tableValidator.IsUniqueName(database: database, tableName: tableName))
+                throw new ArgumentException($"The table {tableName} is already exists in the database {database.Name}.");
 
             if (_deployService.IsDeployed(database: database))
             {
-                _deployService.DropDeployedTable(table: table);
+                _deployService.RenameDeployedTable(table: table, validNewTableName: tableName);
             }
 
-            _tableService.RemoveTable(table);
-        }
-
-        public void RenameTable(Table table, string name)
-        {
-            _tableService.Rename(table, name);
+            _tableService.Rename(table: table, name: tableName);
         }
 
         #endregion
@@ -213,31 +261,50 @@ namespace App
 
         public void RemoveAttribute(Attribute attribute)
         {
-            Table table = _tableService.GetTableById(attribute.TableId);
+            Table table = _tableService.GetTableById(tableId: attribute.TableId);
 
-            Database database = _databaseService.GetById(table.DatabaseId);
+            Database database = _databaseService.GetById(id: table.DatabaseId);
 
-            if (_deployService.IsDeployed(database: database))
-            {
-                _deployService.DropDeployedAttribute(attribute: attribute);
-            }
+            if (_deployService.IsDeployed(database: database)) _deployService.DropDeployedAttribute(attribute: attribute);
 
-            _attributeService.Remove(attribute);
+            _attributeService.Remove(attribute: attribute);
         }
 
         public void RenameAttribute(Attribute attribute, string name)
         {
-            _attributeService.Rename(attribute, name);
+            if (attribute is null)
+                throw new ArgumentNullException(nameof(attribute));
+            if (name is null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (attribute.Name == name) return;
+
+            if (!_attributeValidator.IsValidName(name: name))
+                throw new ArgumentException($"Invalid primary key name {name}.");
+
+            Table table = _tableService.GetTableById(tableId: attribute.TableId);
+
+            if (!_attributeValidator.IsUniqueName(table: table, attributeName: name))
+                throw new InvalidOperationException($"The attribute {name} is already exists.");
+
+            Database database = _databaseService.GetById(id: table.DatabaseId);
+
+            if (_deployService.IsDeployed(database: database))
+            {
+                _deployService.RenameDeployedAttribute(attribute: attribute, validAttributeName: name);
+            }
+
+            _attributeService.Rename(attribute: attribute, name: name);
         }
 
         public IEnumerable<Attribute> GetTableAttributes(Table table)
         {
-            return _tableService.GetTableAttributes(table);
+            return _tableService.GetTableAttributes(table: table);
         }
 
         public Attribute GetAttributeByName(Table table, string name)
         {
-            return _attributeService.GetByName(table, name);
+            return _attributeService.GetByName(table: table, name: name);
         }
 
         #endregion
@@ -259,23 +326,21 @@ namespace App
 
         public IEnumerable<Link> GetDatabaseLinks(Database database)
         {
-            return _linkService.GetDatabaseLinks(database);
+            return _linkService.GetDatabaseLinks(database: database);
         }
 
         public void RemoveLink(Link link)
         {
-            PrimaryKey primaryKey = _attributeService.GetById(link.MasterAttributeId) as PrimaryKey;
+            if (!(_attributeService.GetById(id: link.MasterAttributeId) is PrimaryKey primaryKey))
+                throw new NullReferenceException($"The link {link.Id} is not related to any primary key.");
 
-            Table table = _tableService.GetTableById(primaryKey.TableId);
+            Table table = _tableService.GetTableById(tableId: primaryKey.TableId);
 
-            Database database = _databaseService.GetById(table.DatabaseId);
+            Database database = _databaseService.GetById(id: table.DatabaseId);
 
-            if (_deployService.IsDeployed(database: database))
-            {
-                _deployService.DropDeployedLink(link: link);
-            }
+            if (_deployService.IsDeployed(database: database)) _deployService.DropDeployedLink(link: link);
 
-            _linkService.Remove(link);
+            _linkService.Remove(link: link);
         }
 
         #endregion
@@ -284,17 +349,17 @@ namespace App
 
         public bool IsDatabaseDeployed(Database database)
         {
-            return _deployService.IsDeployed(database);
+            return _deployService.IsDeployed(database: database);
         }
 
         public bool IsDatabaseDeployable(Database database)
         {
-            return _deployService.IsDeployPossible(database);
+            return _deployService.IsDeployPossible(database: database);
         }
 
         public void DeployDatabase(Database database)
         {
-            _deployService.Deploy(database);
+            _deployService.Deploy(database: database);
         }
 
         public void UpdateDeployedDatabase(Database database)
@@ -304,7 +369,7 @@ namespace App
 
         public void DropDeployedDatabase(Database database)
         {
-            _deployService.DropDeployedDatabase(database);
+            _deployService.DropDeployedDatabase(database: database);
         }
 
         #endregion

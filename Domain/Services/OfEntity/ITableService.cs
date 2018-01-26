@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Entities;
+using Domain.Entities.Attribute;
 using Domain.Entities.Link;
 
 namespace Domain.Services.OfEntity
@@ -14,7 +15,7 @@ namespace Domain.Services.OfEntity
 
         IEnumerable<Link> GetDatabaseLinks(Database database);
 
-        IEnumerable<Entities.Attribute.Attribute> GetTableAttributes(Table table);
+        IEnumerable<Attribute> GetTableAttributes(Table table);
 
         Table GetTableByName(Database database, string name);
 

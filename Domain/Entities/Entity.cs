@@ -4,10 +4,10 @@ namespace Domain.Entities
 {
     public abstract class Entity : IEntity
     {
+        public bool IsModified { get; private set; }
+
         [Key]
         public int Id { get; protected set; }
-
-        public bool IsModified { get; private set; }
 
         protected internal void OnModified()
         {

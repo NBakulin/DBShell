@@ -14,9 +14,15 @@ namespace Domain.Services
 
         void UpdateDeployed(Database database);
 
+        void RenameDeployedDatabase(Database database, string validNewDatabaseName);
+
         void DropDeployedDatabase(Database database);
 
+        void RenameDeployedTable(Table table, string validNewTableName);
+
         void DropDeployedTable(Table table);
+
+        void RenameDeployedAttribute(Attribute attribute, string validAttributeName);
 
         void DropDeployedAttribute(Attribute attribute);
 

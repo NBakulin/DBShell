@@ -8,12 +8,6 @@ namespace Domain.Entities.Attribute
         private const int MaxPrecision = 38;
         private const int MinPrecision = 1;
 
-        [Range(MinPrecision, MaxPrecision)]
-        public int? Precision { get; protected set; }
-
-        [Range(0, MaxPrecision)]
-        public int? Scale { get; protected set; }
-
 
         protected internal DecimalNumber() { }
 
@@ -36,9 +30,15 @@ namespace Domain.Entities.Attribute
                 description: description,
                 formSettings: formSettings)
         {
-            ChangePrecision(precision);
-            ChangeScale(scale);
+            ChangePrecision(precision: precision);
+            ChangeScale(scale: scale);
         }
+
+        [Range(minimum: MinPrecision, maximum: MaxPrecision)]
+        public int? Precision { get; protected set; }
+
+        [Range(minimum: 0, maximum: MaxPrecision)]
+        public int? Scale { get; protected set; }
 
         public void ChangePrecision(int? precision)
         {
@@ -66,7 +66,7 @@ namespace Domain.Entities.Attribute
             if (scale > Precision ||
                 scale < 0)
                 throw new ArgumentOutOfRangeException(scale.ToString(),
-                    "\"Scale\" cannot be less than zero or more than \"Precision\".");
+                                                      "\"Scale\" cannot be less than zero or more than \"Precision\".");
 
             Scale = scale;
         }
