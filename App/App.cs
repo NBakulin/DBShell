@@ -199,6 +199,11 @@ namespace App
             _tableService.Rename(table: table, name: tableName);
         }
 
+        public Database GetTableDatabase(Table table)
+        {
+            return _databaseService.GetById(id: table.DatabaseId);
+        }
+
         #endregion
 
         #region ATTRIBUTE
@@ -305,6 +310,16 @@ namespace App
         public Attribute GetAttributeByName(Table table, string name)
         {
             return _attributeService.GetByName(table: table, name: name);
+        }
+
+        public Attribute GetAttributeById(int id)
+        {
+            return _attributeService.GetById(id: id);
+        }
+
+        public Table GetAttributeTable(Attribute attribute)
+        {
+            return _tableService.GetTableById(tableId: attribute.TableId);
         }
 
         #endregion
