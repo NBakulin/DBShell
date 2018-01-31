@@ -344,6 +344,11 @@ namespace App
             return _linkService.GetDatabaseLinks(database: database);
         }
 
+        public Link GetLink(Table masterTable, Table slaveTable)
+        {
+            return _linkService.GetLink(masterTable: masterTable, slaveTable: slaveTable);
+        }
+
         public void RemoveLink(Link link)
         {
             if (!(_attributeService.GetById(id: link.MasterAttributeId) is PrimaryKey primaryKey))
