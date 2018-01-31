@@ -88,12 +88,24 @@ namespace Domain.Services.OfEntity
 
         public Link GetLink(Table masterTable, Table slaveTable)
         {
+            PrimaryKey primaryKey =
+                _attributeRepository
+                    .All()
+                    .OfType<PrimaryKey>()
+                    .Single(pk => pk.TableId == masterTable.Id);
+
+            IEnumerable<ForeignKey> foreignKeys =
+                _attributeRepository
+                    .All()
+                    .OfType<ForeignKey>()
+                    .Where(fk => fk.TableId == slaveTable.Id);
+
             return
                 _linkRepository
                     .All()
                     .SingleOrDefault(l =>
-                                         l.MasterAttributeId == masterTable.Id &&
-                                         l.SlaveAttributeId == slaveTable.Id);
+                                         l.MasterAttributeId == primaryKey.Id &&
+                                         foreignKeys.Any(fk => fk.Id == l.SlaveAttributeId));
         }
 
         public bool IsDeployable(Link entity)
@@ -124,16 +136,13 @@ namespace Domain.Services.OfEntity
 
         public ForeignKey GetForeignKey(Table masterTable, Table slaveTable)
         {
+            Link link = GetLink(masterTable: masterTable, slaveTable: slaveTable);
+
             return
-                (from slaveForeignKey in GetForeignKeys(table: slaveTable).ToList()
-                 let link = _linkRepository
-                            .All()
-                            .SingleOrDefault(l =>
-                                                 l.MasterAttributeId == masterTable.Id &&
-                                                 l.SlaveAttributeId == slaveForeignKey.Id)
-                 where link != null
-                 select slaveForeignKey)
-                .FirstOrDefault();
+                _attributeRepository
+                    .All()
+                    .OfType<ForeignKey>()
+                    .Single(fk => fk.Id == link.SlaveAttributeId);
         }
     }
 }

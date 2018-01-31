@@ -513,6 +513,12 @@ namespace ConsoleApp
 
             #endregion
 
+            #region 4.4 Получение ссылки
+
+            Link newLink = App.GetLink(masterTable: customersTable, slaveTable: ordersTable);
+
+            #endregion
+
             #region 4.2 Получение всех ссылок базы данных
 
             IEnumerable<Link> salesLinks = null;
