@@ -7,12 +7,14 @@ namespace Domain.Services
 {
     public class SqlExpressionExecutor : ISqlExpressionExecutor
     {
-        public void Execute(string sqlConnectionString, string sqlExpression)
+        public int Execute(string sqlConnectionString, string sqlExpression)
         {
             if (sqlConnectionString is null)
                 throw new ArgumentNullException(nameof(sqlConnectionString));
             if (sqlExpression is null)
                 throw new ArgumentNullException(nameof(sqlExpression));
+
+            int result;
 
             using (SqlConnection connection = new SqlConnection(connectionString: sqlConnectionString))
             {
@@ -20,11 +22,13 @@ namespace Domain.Services
 
                 SqlCommand command = new SqlCommand(cmdText: sqlExpression, connection: connection);
 
-                command.ExecuteNonQuery();
+                result = command.ExecuteNonQuery();
             }
+
+            return result;
         }
 
-        public void ExecuteAsDefault(string serverName, string sqlExpression)
+        public int ExecuteAsDefault(string serverName, string sqlExpression)
         {
             if (serverName is null)
                 throw new ArgumentNullException(nameof(serverName));
@@ -33,7 +37,9 @@ namespace Domain.Services
 
             string connectionString = $"Data Source={serverName};Initial Catalog=master;Integrated Security=True";
 
-            Execute(sqlConnectionString: connectionString, sqlExpression: sqlExpression);
+            int result = Execute(sqlConnectionString: connectionString, sqlExpression: sqlExpression);
+
+            return result;
         }
 
         public TResult ExecuteScalar<TResult>(string sqlConnectionString, string sqlExpression)

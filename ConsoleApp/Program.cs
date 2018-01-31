@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac;
 using Domain.Entities;
+using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Domain.Repositories;
 using Domain.Services;
@@ -13,6 +14,7 @@ using Domain.Services.ExpressionProviders;
 using Domain.Services.OfEntity;
 using Domain.Services.Validators;
 using Database = Domain.Entities.Database;
+using String = Domain.Entities.Attribute.String;
 using _Attribute = Domain.Entities.Attribute.Attribute;
 
 namespace ConsoleApp
@@ -80,6 +82,10 @@ namespace ConsoleApp
                 .RegisterType<DeploySqlExpressionProvider>()
                 .As<IDeploySqlExpressionProvider>();
 
+            containerBuilder
+                .RegisterType<CRUDsqlExpressionProvider>()
+                .As<ICRUDsqlExpressionProvider>();
+
 
             containerBuilder
                 .RegisterType<SqlExpressionExecutor>()
@@ -106,6 +112,11 @@ namespace ConsoleApp
             containerBuilder
                 .RegisterType<LinkValidator>()
                 .As<ILinkValidator>();
+
+
+            containerBuilder
+                .RegisterType<CRUD>()
+                .As<ICRUD>();
 
             containerBuilder
                 .RegisterType<App.App>()
@@ -616,12 +627,73 @@ namespace ConsoleApp
 
             try
             {
-                App.DropDeployedDatabase(database: sales);
+                //App.DropDeployedDatabase(database: sales);
             }
             catch (ArgumentException e)
             {
                 Console.WriteLine("Ошибка при удалении развернутой базы данных. " + e.Message);
             }
+
+            #endregion
+
+            #endregion
+
+            #region 6_CRUD
+
+            #region 6.1 Insert
+
+            // Заполнение коллекции вставляемыми данными
+
+            attributes = App.GetTableAttributes(table: customersTable);
+
+            Dictionary<_Attribute, string> values = new Dictionary<_Attribute, string>();
+
+            foreach (_Attribute attribute in attributes)
+            {
+                switch (attribute)
+                {
+                    case PrimaryKey _:
+                    case ForeignKey _:
+                        continue;
+
+                    case String a:
+                        values[key: a] = "SomeString";
+                        break;
+                    case IntegerNumber i:
+                        values[key: i] = "22";
+                        break;
+                }
+            }
+
+            // Непосредственно вставка
+
+            int rowsAffected = -1;
+
+            try
+            {
+                rowsAffected = App.InsertData(table: customersTable, values: values);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine("Ошбика при вставке значений: " + e.Message);
+            }
+
+            Console.WriteLine($"При вставке затронуто строк: {rowsAffected}");
+
+            #endregion
+
+            #region 6.2 REMOVE
+
+            try
+            {
+                rowsAffected = App.DeleteData(table: customersTable, id: 1);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine(value: e.Message);
+            }
+
+            Console.WriteLine($"При удалении затронуто строк: {rowsAffected}");
 
             #endregion
 

@@ -4,8 +4,8 @@ namespace Domain.Services
 {
     public interface ISqlExpressionExecutor
     {
-        void Execute(string sqlConnectionString, string sqlExpression);
-        void ExecuteAsDefault(string serverName, string sqlExpression);
+        int Execute(string sqlConnectionString, string sqlExpression);
+        int ExecuteAsDefault(string serverName, string sqlExpression);
         T ExecuteScalar<T>(string sqlConnectionString, string sqlExpression);
         T ExecuteScalarAsDefault<T>(string serverName, string sqlExpression);
 
