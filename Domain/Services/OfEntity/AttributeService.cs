@@ -193,8 +193,14 @@ namespace Domain.Services.OfEntity
 
         public void Remove(Attribute attribute)
         {
-            if (attribute is null)
-                throw new ArgumentNullException(nameof(attribute));
+            switch (attribute) {
+                case null:
+                    throw new ArgumentNullException(nameof(attribute));
+                case PrimaryKey _:
+                    throw new ArgumentException("Cannot remove primary key attribute.");
+                case ForeignKey _:
+                    throw new ArgumentException("cannot remove foreign key attribute.");
+            }
 
             _attributeRepository
                 .Remove(entity: attribute);
