@@ -10,5 +10,7 @@ namespace Domain.Services.ExpressionProviders
         string Insert(Table table, IDictionary<Attribute, string> values);
 
         string Delete(Table table, int id);
+
+        string SelectAll(Table table, IEnumerable<Attribute> attributes);
     }
 }

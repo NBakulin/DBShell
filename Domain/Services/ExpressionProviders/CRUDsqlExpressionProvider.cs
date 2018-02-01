@@ -37,5 +37,18 @@ namespace Domain.Services.ExpressionProviders
                 $"DELETE FROM {table.Name} \n" +
                 $"WHERE Id = {id}";
         }
+
+        public string SelectAll(Table table, IEnumerable<Attribute> attributes)
+        {
+            return
+                "SELECT " +
+                attributes
+                    .Aggregate(
+                        seed: string.Empty,
+                        func: (sum, attr) => $"{sum}, {attr.Name}")
+                    .Remove(startIndex: 0, count: 1) +
+                " " +
+                $"FROM {table.Name}";
+        }
     }
 }

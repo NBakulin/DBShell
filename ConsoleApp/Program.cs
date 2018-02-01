@@ -682,7 +682,18 @@ namespace ConsoleApp
 
             #endregion
 
-            #region 6.2 REMOVE
+            #region 6.2 Select all
+
+            IEnumerable<IDictionary<_Attribute, object>> selectResult = App.SelectAll(table: customersTable);
+
+            foreach (IDictionary<_Attribute, object> tuple in selectResult)
+            {
+                Console.WriteLine(tuple.Keys.Aggregate("Строка: ", (sum, attr) => $"{sum}, {tuple[key: attr]}"));
+            }
+
+            #endregion
+
+            #region 6.3 REMOVE
 
             try
             {

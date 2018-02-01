@@ -10,5 +10,7 @@ namespace Domain.Services
         int Insert(Table table, IDictionary<Attribute, string> values);
 
         int Delete(Table table, int id);
+
+        IEnumerable<IDictionary<Attribute, object>> SelectAll(Table table);
     }
 }

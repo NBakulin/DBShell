@@ -409,6 +409,11 @@ namespace App
             return _crudService.Delete(table: table, id: id);
         }
 
+        public IEnumerable<IDictionary<Attribute, object>> SelectAll(Table table)
+        {
+            return _crudService.SelectAll(table: table);
+        }
+
         #endregion
     }
 }

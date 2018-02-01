@@ -15,17 +15,20 @@ namespace Domain.Services
         private readonly IDatabaseService _databaseService;
         private readonly ICRUDsqlExpressionProvider _crudSqlExpressionProvider;
         private readonly ITableService _tableService;
+        private readonly IAttributeService _attributeService;
 
         public CRUD(
             ISqlExpressionExecutor sqlExecutor,
             IDatabaseService databaseService,
             ICRUDsqlExpressionProvider crudSqlExpressionProvider,
-            ITableService tableService)
+            ITableService tableService,
+            IAttributeService attributeService)
         {
             _sqlExecutor = sqlExecutor;
             _databaseService = databaseService;
             _crudSqlExpressionProvider = crudSqlExpressionProvider;
             _tableService = tableService;
+            _attributeService = attributeService;
         }
 
         public int Insert(Table table, IDictionary<Entities.Attribute.Attribute, string> values)
@@ -74,6 +77,26 @@ namespace Domain.Services
                     .Delete(table: table, id: id));
 
             return rowsAffected;
+        }
+
+        public IEnumerable<IDictionary<Entities.Attribute.Attribute, object>> SelectAll(Table table)
+        {
+            if (table is null)
+                throw new ArgumentNullException(nameof(table));
+
+            Database database = _databaseService.GetById(id: table.DatabaseId);
+
+            IEnumerable<Entities.Attribute.Attribute> tableAttributes =
+                _tableService
+                    .GetTableAttributes(table: table)
+                    .Where(a => !(a is PrimaryKey || a is ForeignKey))
+                    .ToList();
+
+            return _sqlExecutor.ExecuteDictionaryReader(
+                connectionString: database.ConnectionString,
+                sqlExpression: _crudSqlExpressionProvider
+                    .SelectAll(table: table, attributes: tableAttributes),
+                attributes: tableAttributes);
         }
     }
 }

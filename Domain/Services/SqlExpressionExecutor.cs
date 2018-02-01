@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Domain.Entities.Attribute.Integer;
+using Attribute = Domain.Entities.Attribute.Attribute;
+using String = Domain.Entities.Attribute.String;
 
 namespace Domain.Services
 {
@@ -187,6 +190,57 @@ namespace Domain.Services
                         for (int i = 0; i < reader.FieldCount; i++) objectArray[i] = reader.GetValue(i: i);
 
                         resultCollection.Add(item: objectArray);
+                    }
+
+                reader.Close();
+            }
+
+            return resultCollection;
+        }
+
+        public IEnumerable<IDictionary<Attribute, object>> ExecuteDictionaryReader(
+            string connectionString,
+            string sqlExpression,
+            IEnumerable<Attribute> attributes)
+        {
+            if (connectionString is null)
+                throw new ArgumentNullException(nameof(connectionString));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+            if (attributes is null)
+                throw new ArgumentNullException(nameof(attributes));
+
+            IList<IDictionary<Attribute, object>> resultCollection = new List<IDictionary<Attribute, object>>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString: connectionString))
+            {
+                SqlCommand command = new SqlCommand(cmdText: sqlExpression, connection: connection);
+
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                    while (reader.Read())
+                    {
+                        Dictionary<Attribute, object> dictionary = new Dictionary<Attribute, object>();
+
+                        foreach (Attribute attribute in attributes)
+                        {
+                            switch (attribute)
+                            {
+                                case String s:
+                                    dictionary[key: s] = reader.GetString(reader.GetOrdinal(name: s.Name));
+                                    break;
+                                case IntegerNumber i:
+                                    dictionary[key: i] = reader.GetInt32(reader.GetOrdinal(name: i.Name));
+                                    break;
+                                default:
+                                    throw new ArgumentException("Unexpected attribute type.");
+                            }
+                        }
+
+                        resultCollection.Add(item: dictionary);
                     }
 
                 reader.Close();
