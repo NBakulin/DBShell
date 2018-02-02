@@ -20,6 +20,7 @@ namespace App
         private readonly IDeployService _deployService;
         private readonly ILinkService _linkService;
         private readonly ITableService _tableService;
+        private readonly ICRUD _crudService;
 
         private readonly IDatabaseValidator _databaseValidator;
         private readonly ITableValidator _tableValidator;
@@ -38,7 +39,8 @@ namespace App
             IDeployService deployService,
             IDatabaseValidator databaseValidator,
             ITableValidator tableValidator,
-            IAttributeValidator attributeValidator)
+            IAttributeValidator attributeValidator,
+            ICRUD crudService)
         {
             _defaultConnectionString = connectionString;
             // sorry for this
@@ -55,6 +57,7 @@ namespace App
             _databaseValidator = databaseValidator;
             _tableValidator = tableValidator;
             _attributeValidator = attributeValidator;
+            _crudService = crudService;
         }
 
         public (bool ItWorks, string ErrorMessage) IsConnectionWorks()
@@ -344,6 +347,11 @@ namespace App
             return _linkService.GetDatabaseLinks(database: database);
         }
 
+        public Link GetLink(Table masterTable, Table slaveTable)
+        {
+            return _linkService.GetLink(masterTable: masterTable, slaveTable: slaveTable);
+        }
+
         public void RemoveLink(Link link)
         {
             if (!(_attributeService.GetById(id: link.MasterAttributeId) is PrimaryKey primaryKey))
@@ -385,6 +393,25 @@ namespace App
         public void DropDeployedDatabase(Database database)
         {
             _deployService.DropDeployedDatabase(database: database);
+        }
+
+        #endregion
+
+        #region CRUD
+
+        public int InsertData(Table table, IDictionary<Attribute, string> values)
+        {
+            return _crudService.Insert(table: table, values: values);
+        }
+
+        public int DeleteData(Table table, int id)
+        {
+            return _crudService.Delete(table: table, id: id);
+        }
+
+        public IEnumerable<IDictionary<Attribute, object>> SelectAll(Table table)
+        {
+            return _crudService.SelectAll(table: table);
         }
 
         #endregion

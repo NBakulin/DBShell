@@ -66,9 +66,13 @@
     <Compile Include="Entities\Table.cs" />
     <Compile Include="Repositories\EntityFrameworkRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Services\CRUD.cs" />
+    <Compile Include="Services\ExpressionProviders\CRUDsqlExpressionProvider.cs" />
     <Compile Include="Services\ExpressionProviders\DeploySqlExpressionProvider.cs" />
+    <Compile Include="Services\ExpressionProviders\ICRUDsqlExpressionProvider.cs" />
     <Compile Include="Services\ExpressionProviders\IDeploySqlExpressionProvider.cs" />
     <Compile Include="Services\ExpressionProviders\ISystemExpressionProvider.cs" />
+    <Compile Include="Services\ICRUD.cs" />
     <Compile Include="Services\OfEntity\AttributeService.cs" />
     <Compile Include="Services\ExpressionProviders\AttributeSqlExpressionProvider.cs" />
     <Compile Include="Services\OfEntity\DatabaseService.cs" />

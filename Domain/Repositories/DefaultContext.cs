@@ -61,8 +61,7 @@ namespace Domain.Repositories
                 .Entity<ForeignKey>()
                 .HasMany(fk => fk.Links)
                 .WithRequired(l => l.SlaveAttribute)
-                .HasForeignKey(l => l.SlaveAttributeId)
-                .WillCascadeOnDelete(value: false);
+                .HasForeignKey(l => l.SlaveAttributeId);
         }
     }
 }

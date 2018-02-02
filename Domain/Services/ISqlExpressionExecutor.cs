@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Domain.Entities.Attribute;
 
 namespace Domain.Services
 {
     public interface ISqlExpressionExecutor
     {
-        void Execute(string sqlConnectionString, string sqlExpression);
-        void ExecuteAsDefault(string serverName, string sqlExpression);
+        int Execute(string sqlConnectionString, string sqlExpression);
+        int ExecuteAsDefault(string serverName, string sqlExpression);
         T ExecuteScalar<T>(string sqlConnectionString, string sqlExpression);
         T ExecuteScalarAsDefault<T>(string serverName, string sqlExpression);
 
@@ -18,5 +19,7 @@ namespace Domain.Services
         IEnumerable<(T1, T2, T3, T4, T5, T6)> ExecuteReader<T1, T2, T3, T4, T5, T6>(string connectionString, string sqlExpression);
         IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> ExecuteReader<T1, T2, T3, T4, T5, T6, T7>(string connectionString, string sqlExpression);
         IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ExecuteReader<T1, T2, T3, T4, T5, T6, T7, T8>(string connectionString, string sqlExpression);
+
+        IEnumerable<IDictionary<Attribute, object>> ExecuteDictionaryReader(string connectionString, string sqlExpression, IEnumerable<Attribute> attributes);
     }
 }

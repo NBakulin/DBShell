@@ -2,17 +2,22 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using Domain.Entities.Attribute.Integer;
+using Attribute = Domain.Entities.Attribute.Attribute;
+using String = Domain.Entities.Attribute.String;
 
 namespace Domain.Services
 {
     public class SqlExpressionExecutor : ISqlExpressionExecutor
     {
-        public void Execute(string sqlConnectionString, string sqlExpression)
+        public int Execute(string sqlConnectionString, string sqlExpression)
         {
             if (sqlConnectionString is null)
                 throw new ArgumentNullException(nameof(sqlConnectionString));
             if (sqlExpression is null)
                 throw new ArgumentNullException(nameof(sqlExpression));
+
+            int result;
 
             using (SqlConnection connection = new SqlConnection(connectionString: sqlConnectionString))
             {
@@ -20,11 +25,13 @@ namespace Domain.Services
 
                 SqlCommand command = new SqlCommand(cmdText: sqlExpression, connection: connection);
 
-                command.ExecuteNonQuery();
+                result = command.ExecuteNonQuery();
             }
+
+            return result;
         }
 
-        public void ExecuteAsDefault(string serverName, string sqlExpression)
+        public int ExecuteAsDefault(string serverName, string sqlExpression)
         {
             if (serverName is null)
                 throw new ArgumentNullException(nameof(serverName));
@@ -33,7 +40,9 @@ namespace Domain.Services
 
             string connectionString = $"Data Source={serverName};Initial Catalog=master;Integrated Security=True";
 
-            Execute(sqlConnectionString: connectionString, sqlExpression: sqlExpression);
+            int result = Execute(sqlConnectionString: connectionString, sqlExpression: sqlExpression);
+
+            return result;
         }
 
         public TResult ExecuteScalar<TResult>(string sqlConnectionString, string sqlExpression)
@@ -181,6 +190,57 @@ namespace Domain.Services
                         for (int i = 0; i < reader.FieldCount; i++) objectArray[i] = reader.GetValue(i: i);
 
                         resultCollection.Add(item: objectArray);
+                    }
+
+                reader.Close();
+            }
+
+            return resultCollection;
+        }
+
+        public IEnumerable<IDictionary<Attribute, object>> ExecuteDictionaryReader(
+            string connectionString,
+            string sqlExpression,
+            IEnumerable<Attribute> attributes)
+        {
+            if (connectionString is null)
+                throw new ArgumentNullException(nameof(connectionString));
+            if (sqlExpression is null)
+                throw new ArgumentNullException(nameof(sqlExpression));
+            if (attributes is null)
+                throw new ArgumentNullException(nameof(attributes));
+
+            IList<IDictionary<Attribute, object>> resultCollection = new List<IDictionary<Attribute, object>>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString: connectionString))
+            {
+                SqlCommand command = new SqlCommand(cmdText: sqlExpression, connection: connection);
+
+                connection.Open();
+
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                    while (reader.Read())
+                    {
+                        Dictionary<Attribute, object> dictionary = new Dictionary<Attribute, object>();
+
+                        foreach (Attribute attribute in attributes)
+                        {
+                            switch (attribute)
+                            {
+                                case String s:
+                                    dictionary[key: s] = reader.GetString(reader.GetOrdinal(name: s.Name));
+                                    break;
+                                case IntegerNumber i:
+                                    dictionary[key: i] = reader.GetInt32(reader.GetOrdinal(name: i.Name));
+                                    break;
+                                default:
+                                    throw new ArgumentException("Unexpected attribute type.");
+                            }
+                        }
+
+                        resultCollection.Add(item: dictionary);
                     }
 
                 reader.Close();

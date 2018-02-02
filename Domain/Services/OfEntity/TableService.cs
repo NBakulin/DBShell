@@ -16,6 +16,7 @@ namespace Domain.Services.OfEntity
         private readonly IAttributeService _attributeService;
         private readonly ILinkService _linkService;
         private readonly IRepository<Table> _tableRepository;
+        private readonly IRepository<Link> _linkRepository;
         private readonly ITableValidator _tableValidator;
 
 
@@ -24,13 +25,15 @@ namespace Domain.Services.OfEntity
             IAttributeService attributeService,
             ITableValidator tableValidator,
             ILinkService linkService,
-            IRepository<Attribute> attributeRepository)
+            IRepository<Attribute> attributeRepository,
+            IRepository<Link> linkRepository)
         {
             _tableRepository = tableRepository;
             _attributeService = attributeService;
             _tableValidator = tableValidator;
             _linkService = linkService;
             _attributeRepository = attributeRepository;
+            _linkRepository = linkRepository;
         }
 
         public void Add(Database database, string tableName)
@@ -110,6 +113,14 @@ namespace Domain.Services.OfEntity
 
         public void RemoveTable(Table table)
         {
+            PrimaryKey primaryKey = _linkService.GetPrimaryKey(table: table);
+
+            _linkRepository
+                .All()
+                .Where(l => l.MasterAttributeId == primaryKey.Id)
+                .ToList()
+                .ForEach(l => _linkService.Remove(link: l));
+
             _tableRepository.Remove(entity: table);
         }
 
