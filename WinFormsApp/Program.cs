@@ -23,9 +23,9 @@ namespace Forms
             ContainerBuilder containerBuilder = new ContainerBuilder();
 
             containerBuilder
-                .RegisterGeneric(typeof(EntityFrameworkRepository<>))
-                .As(typeof(IRepository<>))
-                .SingleInstance();
+                            .RegisterGeneric(typeof(EntityFrameworkRepository<>))
+                            .As(typeof(IRepository<>))
+                            .SingleInstance();
 
 
             containerBuilder
@@ -74,6 +74,10 @@ namespace Forms
                 .RegisterType<DeploySqlExpressionProvider>()
                 .As<IDeploySqlExpressionProvider>();
 
+            containerBuilder
+                .RegisterType<CRUDsqlExpressionProvider>()
+                .As<ICRUDsqlExpressionProvider>();
+
 
             containerBuilder
                 .RegisterType<SqlExpressionExecutor>()
@@ -100,6 +104,11 @@ namespace Forms
             containerBuilder
                 .RegisterType<LinkValidator>()
                 .As<ILinkValidator>();
+
+
+            containerBuilder
+                .RegisterType<CRUD>()
+                .As<ICRUD>();
 
             containerBuilder
                 .RegisterType<App.App>()

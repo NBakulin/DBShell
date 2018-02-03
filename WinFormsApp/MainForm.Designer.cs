@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.DatabasesTree = new System.Windows.Forms.TreeView();
             this.CreateDatabaseDatabase = new System.Windows.Forms.Button();
             this.CreateTableButton = new System.Windows.Forms.Button();
@@ -41,6 +42,8 @@
             this.DeleteAttributeButton = new System.Windows.Forms.Button();
             this.DeleteTableButton = new System.Windows.Forms.Button();
             this.DeleteDatabaseButton = new System.Windows.Forms.Button();
+            this.masterAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SlaveAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.LinksView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -129,6 +132,17 @@
             this.LinksView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.LinksView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.LinksView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.LinksView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.masterAttribute,
+            this.SlaveAttribute});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.LinksView.DefaultCellStyle = dataGridViewCellStyle2;
             this.LinksView.Location = new System.Drawing.Point(471, 36);
             this.LinksView.Name = "LinksView";
             this.LinksView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -179,6 +193,16 @@
             this.DeleteDatabaseButton.UseVisualStyleBackColor = true;
             this.DeleteDatabaseButton.Click += new System.EventHandler(this.DeleteDatabaseButton_Click);
             // 
+            // masterAttribute
+            // 
+            this.masterAttribute.HeaderText = "Master attribute";
+            this.masterAttribute.Name = "masterAttribute";
+            // 
+            // SlaveAttribute
+            // 
+            this.SlaveAttribute.HeaderText = "Slave attribute";
+            this.SlaveAttribute.Name = "SlaveAttribute";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -219,6 +243,8 @@
         private System.Windows.Forms.Button DeleteAttributeButton;
         private System.Windows.Forms.Button DeleteTableButton;
         private System.Windows.Forms.Button DeleteDatabaseButton;
+        private System.Windows.Forms.DataGridViewTextBoxColumn masterAttribute;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SlaveAttribute;
     }
 }
 

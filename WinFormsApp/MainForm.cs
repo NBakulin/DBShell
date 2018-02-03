@@ -229,20 +229,20 @@ namespace Forms
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            DataGridViewColumn masterColumn = new DataGridViewColumn
-            {
-                HeaderText = "Master table",
-                Name = "masterAttribute",
-                CellTemplate = new DataGridViewTextBoxCell()
-            };
-            DataGridViewColumn slaveColumn = new DataGridViewColumn
-            {
-                HeaderText = "Slave table",
-                Name = "slaveAttribute",
-                CellTemplate = new DataGridViewTextBoxCell()
-            };
-            LinksView.Columns.Add(masterColumn);
-            LinksView.Columns.Add(slaveColumn);
+            //DataGridViewColumn masterColumn = new DataGridViewColumn
+            //{
+            //    HeaderText = @"Master table",
+            //    Name = @"masterAttribute",
+            //    CellTemplate = new DataGridViewRowHeaderCell()
+            //};
+            //DataGridViewColumn slaveColumn = new DataGridViewColumn
+            //{
+            //    HeaderText = @"Slave table",
+            //    Name = @"slaveAttribute",
+            //    CellTemplate = new DataGridViewRowHeaderCell()
+            //};
+            //LinksView.Columns.Add(masterColumn);
+            //LinksView.Columns.Add(slaveColumn);
         }
 
         private void CreateLinkButton_Click(object sender, EventArgs e)
@@ -296,6 +296,7 @@ namespace Forms
 
         private void ShowLinks_Click(object sender, EventArgs e)
         {
+            LinksView.Rows.Clear();
             if (DatabasesTree.SelectedNode != null &&
                 DatabasesTree.SelectedNode.Level == 0)
             {
@@ -315,7 +316,16 @@ namespace Forms
                 {
                     try
                     {
-                         LinksView.Rows.Add(_app.GetTableById(link.MasterAttributeId).Name, _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)).Name);
+                        Table tableOne = _app.GetTableById(link.MasterAttributeId);
+                        Table tableTwo = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId));
+                        try
+                        {
+                            LinksView.Rows.Add(tableOne.Name, tableTwo.Name);
+                        }
+                        catch (Exception exc)
+                        {
+                            MessageBox.Show("WTF just happened?!");
+                        }
                     }
                     catch (ArgumentNullException except)
                     {
@@ -410,26 +420,27 @@ namespace Forms
 
         private void DeleteLinkButton_Click(object sender, EventArgs e)
         {
-           /* if (LinksView.SelectedRows.Count == 0)
-            {
-                _app.ge
-                    try
-                    {
-                        LinksView.Rows.Add(_app.GetTableById(link.MasterAttributeId).Name, _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)).Name);
-                    }
-                    catch (ArgumentNullException except)
-                    {
-                        MessageBox.Show(@"Нулевая ссылка: " + except.Message);
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        MessageBox.Show(@"Ошибка при вставке: " + ex.Message);
-                    }
-            }
-            else
-            {
-                MessageBox.Show(@"Выберите связь для удаления!");
-            }*/
+            //if (LinksView.SelectedRows.Count == 0)
+            //{
+
+            //    _app.GetLink()
+            //        try
+            //    {
+            //        LinksView.Rows.Add(_app.GetTableById(link.MasterAttributeId).Name, _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)).Name);
+            //    }
+            //    catch (ArgumentNullException except)
+            //    {
+            //        MessageBox.Show(@"Нулевая ссылка: " + except.Message);
+            //    }
+            //    catch (InvalidOperationException ex)
+            //    {
+            //        MessageBox.Show(@"Ошибка при вставке: " + ex.Message);
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show(@"Выберите связь для удаления!");
+            //}
         }
     }
 }
