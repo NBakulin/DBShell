@@ -88,16 +88,13 @@ namespace Forms
                     try
                     {
                         _app.AddTable(database, tableForm.InputText);
-                        newNode.Text = tableForm.InputText;
-                        DatabasesTree.SelectedNode.Nodes.Add(newNode);
                     }
                     catch (ArgumentException exception)
                     {
                         MessageBox.Show(exception.Message);
                     }
 
-                    DatabasesTree.ExpandAll();
-                    DatabasesTree.Update();
+                    showDatabases();
                 };
             }
             else
@@ -167,8 +164,7 @@ namespace Forms
                     }
 
                     DatabasesTree.SelectedNode.Nodes.Add(newNode);
-                    DatabasesTree.ExpandAll();
-                    DatabasesTree.Update();
+                    showDatabases();
                 };
             }
             else
@@ -310,15 +306,13 @@ namespace Forms
                 {
                     try
                     {
-                        Table tableOne = _app.GetTableById(link.MasterAttributeId);
-                        Table tableTwo = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId));
-                        try
+                        Table MasterTable = _app.GetTableById(link.MasterAttributeId);
+                        Table slaveTable = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId));
+                        if (MasterTable != null && slaveTable != null)
+                        LinksView.Rows.Add(MasterTable.Name, slaveTable.Name, link.MasterAttributeId.ToString(), link.SlaveAttributeId.ToString());
+                        else
                         {
-                            LinksView.Rows.Add(tableOne.Name, tableTwo.Name, link.MasterAttributeId.ToString(), link.SlaveAttributeId.ToString());
-                        }
-                        catch (Exception exc)
-                        {
-                            MessageBox.Show("WTF just happened!");
+                            MessageBox.Show(@"Не удалось получить экземпляр таблицы.");
                         }
                     }
                     catch (ArgumentNullException except)
@@ -342,20 +336,6 @@ namespace Forms
         private void MainForm_Load(object sender, EventArgs e)
         {
             showDatabases();
-            //DataGridViewColumn masterColumn = new DataGridViewColumn
-            //{
-            //    HeaderText = @"Master table",
-            //    Name = @"masterAttribute",
-            //    CellTemplate = new DataGridViewRowHeaderCell()
-            //};
-            //DataGridViewColumn slaveColumn = new DataGridViewColumn
-            //{
-            //    HeaderText = @"Slave table",
-            //    Name = @"slaveAttribute",
-            //    CellTemplate = new DataGridViewRowHeaderCell()
-            //};
-            //LinksView.Columns.Add(masterColumn);
-            //LinksView.Columns.Add(slaveColumn);
         }
         #endregion MainForm_Load
         
@@ -448,16 +428,16 @@ namespace Forms
         {
             if (LinksView.SelectedRows.Count != 0)
             {
-                Table massterTable = _app.GetTableById(Convert.ToInt32(LinksView.SelectedRows[0].Cells[2].Value));
+                Table masterTable = _app.GetTableById(Convert.ToInt32(LinksView.SelectedRows[0].Cells[2].Value));
                 Table slaveTable = _app.GetTableById(Convert.ToInt32(LinksView.SelectedRows[0].Cells[3].Value));
                 try
                 {
-                    Link linkToDelete = _app.GetLink(massterTable, slaveTable);
+                    Link linkToDelete = _app.GetLink(masterTable, slaveTable);
                     _app.RemoveLink(linkToDelete);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(@"Ошибка при удалении ссылки. " + ex.Message);
+                    MessageBox.Show(@"Ошибка при удалении связи. " + ex.Message);
                 }
             }
             else

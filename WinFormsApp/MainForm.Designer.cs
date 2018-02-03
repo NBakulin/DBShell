@@ -218,14 +218,12 @@
             this.MasterAttributeID.HeaderText = "Master ID";
             this.MasterAttributeID.Name = "MasterAttributeID";
             this.MasterAttributeID.ReadOnly = true;
-            this.MasterAttributeID.Visible = false;
             // 
             // SlaveAttributeID
             // 
             this.SlaveAttributeID.HeaderText = "Slave ID";
             this.SlaveAttributeID.Name = "SlaveAttributeID";
             this.SlaveAttributeID.ReadOnly = true;
-            this.SlaveAttributeID.Visible = false;
             // 
             // MainForm
             // 
