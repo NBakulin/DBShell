@@ -314,7 +314,7 @@ namespace Forms
                         Table tableTwo = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId));
                         try
                         {
-                            LinksView.Rows.Add(tableOne.Name, tableTwo.Name);
+                            LinksView.Rows.Add(tableOne.Name, tableTwo.Name, link.MasterAttributeId.ToString(), link.SlaveAttributeId.ToString());
                         }
                         catch (Exception exc)
                         {
@@ -446,28 +446,24 @@ namespace Forms
         #region DeleteLinkButton
         private void DeleteLinkButton_Click(object sender, EventArgs e)
         {
-            //if (LinksView.SelectedRows.Count != 0)
-            //{
-            //    Link 
-            //    Table massterTable = _app.GetTableById();
-            //    Table slaveTable = _app.GetTableById();
-            //    try
-            //    {
-            //        LinksView.Rows.Add(_app.GetTableById(link.MasterAttributeId).Name, _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)).Name);
-            //    }
-            //    catch (ArgumentNullException except)
-            //    {
-            //        MessageBox.Show(@"Нулевая ссылка: " + except.Message);
-            //    }
-            //    catch (InvalidOperationException ex)
-            //    {
-            //        MessageBox.Show(@"Ошибка при вставке: " + ex.Message);
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show(@"Выберите связь для удаления!");
-            //}
+            if (LinksView.SelectedRows.Count != 0)
+            {
+                Table massterTable = _app.GetTableById(Convert.ToInt32(LinksView.SelectedRows[0].Cells[2].Value));
+                Table slaveTable = _app.GetTableById(Convert.ToInt32(LinksView.SelectedRows[0].Cells[3].Value));
+                try
+                {
+                    Link linkToDelete = _app.GetLink(massterTable, slaveTable);
+                    _app.RemoveLink(linkToDelete);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(@"Ошибка при удалении ссылки. " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show(@"Выберите связь для удаления!");
+            }
         }
         #endregion DeleteLinkButton
     }

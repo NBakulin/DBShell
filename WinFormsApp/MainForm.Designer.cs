@@ -44,6 +44,8 @@
             this.DeleteDatabaseButton = new System.Windows.Forms.Button();
             this.masterAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SlaveAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MasterAttributeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SlaveAttributeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.LinksView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,7 +136,9 @@
             this.LinksView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.LinksView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.masterAttribute,
-            this.SlaveAttribute});
+            this.SlaveAttribute,
+            this.MasterAttributeID,
+            this.SlaveAttributeID});
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -146,7 +150,7 @@
             this.LinksView.Location = new System.Drawing.Point(471, 36);
             this.LinksView.Name = "LinksView";
             this.LinksView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.LinksView.Size = new System.Drawing.Size(276, 441);
+            this.LinksView.Size = new System.Drawing.Size(273, 441);
             this.LinksView.TabIndex = 7;
             // 
             // DeleteLinkButton
@@ -195,13 +199,33 @@
             // 
             // masterAttribute
             // 
+            this.masterAttribute.Frozen = true;
             this.masterAttribute.HeaderText = "Master attribute";
             this.masterAttribute.Name = "masterAttribute";
+            this.masterAttribute.ReadOnly = true;
+            this.masterAttribute.Width = 115;
             // 
             // SlaveAttribute
             // 
+            this.SlaveAttribute.Frozen = true;
             this.SlaveAttribute.HeaderText = "Slave attribute";
             this.SlaveAttribute.Name = "SlaveAttribute";
+            this.SlaveAttribute.ReadOnly = true;
+            this.SlaveAttribute.Width = 115;
+            // 
+            // MasterAttributeID
+            // 
+            this.MasterAttributeID.HeaderText = "Master ID";
+            this.MasterAttributeID.Name = "MasterAttributeID";
+            this.MasterAttributeID.ReadOnly = true;
+            this.MasterAttributeID.Visible = false;
+            // 
+            // SlaveAttributeID
+            // 
+            this.SlaveAttributeID.HeaderText = "Slave ID";
+            this.SlaveAttributeID.Name = "SlaveAttributeID";
+            this.SlaveAttributeID.ReadOnly = true;
+            this.SlaveAttributeID.Visible = false;
             // 
             // MainForm
             // 
@@ -245,6 +269,8 @@
         private System.Windows.Forms.Button DeleteDatabaseButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn masterAttribute;
         private System.Windows.Forms.DataGridViewTextBoxColumn SlaveAttribute;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MasterAttributeID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn SlaveAttributeID;
     }
 }
 
