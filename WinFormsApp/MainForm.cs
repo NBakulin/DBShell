@@ -444,41 +444,34 @@ namespace Forms
 
         private void RenameDatabaseButton_Click(object sender, EventArgs e)
         {
-
             if (DatabasesTree.SelectedNode != null &&
                 DatabasesTree.SelectedNode.Level == 0)
             {
                 try
                 {
-
-                    DatabaseCreationForm databaseForm = new DatabaseCreationForm();
+                    DatabaseCreationForm databaseRenameForm = new DatabaseCreationForm();
                     if (DatabasesTree.Nodes.Count != 0)
                         foreach (TreeNode treeviewNodes in DatabasesTree.Nodes)
                             _nodes.Add(treeviewNodes.Text);
-                    databaseForm.SetNodes(_nodes);
-                    databaseForm.Show();
-                    databaseForm.Text = @"Переименновать базу данных";
-                    databaseForm.dbNameLabel.Text = @"Введите новое название базы данных";
-                    databaseForm.FormClosing += (obj, args) =>
+                    databaseRenameForm.SetNodes(_nodes);
+                    databaseRenameForm.SetTextboxValue(DatabasesTree.SelectedNode.Text);
+                    databaseRenameForm.Show();
+                    databaseRenameForm.Text = @"Переименновать базу данных";
+                    databaseRenameForm.dbNameLabel.Text = @"Введите новое название базы данных";
+                    databaseRenameForm.FormClosing += (obj, args) =>
                     {
-                        if (databaseForm.InputText == string.Empty) return;
+                        if (databaseRenameForm.InputText == string.Empty) return;
                         try
                         {
                             Database selectedDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Text);
-                            _app.RenameDatabase(selectedDatabase, databaseForm.InputText);
+                            _app.RenameDatabase(selectedDatabase, databaseRenameForm.InputText);
                             showDatabases();
                         }
                         catch (ArgumentException exception)
                         {
                             MessageBox.Show(exception.Message);
                         }
-                    };
-
-
-
-
-
-
+                    }; 
                 }
                 catch (NullReferenceException exception)
                 {
@@ -488,7 +481,97 @@ namespace Forms
             }
             else
             {
-                MessageBox.Show(@"Выберите базу данных!");
+                MessageBox.Show(@"Выберите базу данных для переименования!");
+            }
+        }
+
+        private void RenameTableButton_Click(object sender, EventArgs e)
+        {
+            if (DatabasesTree.SelectedNode != null &&
+                DatabasesTree.SelectedNode.Level == 1)
+            {
+                try
+                {
+                    DatabaseCreationForm tableRenameForm = new DatabaseCreationForm();
+                    if (DatabasesTree.Nodes.Count != 0)
+                        foreach (TreeNode treeviewNodes in DatabasesTree.Nodes)
+                            _nodes.Add(treeviewNodes.Text);
+                    tableRenameForm.SetNodes(_nodes);
+                    tableRenameForm.SetTextboxValue(DatabasesTree.SelectedNode.Text);
+                    tableRenameForm.Show();
+                    tableRenameForm.Text = @"Переименновать таблицу";
+                    tableRenameForm.dbNameLabel.Text = @"Введите новое название таблицы";
+                    tableRenameForm.FormClosing += (obj, args) =>
+                    {
+                        if (tableRenameForm.InputText == string.Empty) return;
+                        try
+                        {
+                            Database parentDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Parent.Text);
+                            Table selectedTable = _app.GetTableByName(parentDatabase, DatabasesTree.SelectedNode.Text);
+                            _app.RenameTable(selectedTable, tableRenameForm.InputText);
+                            showDatabases();
+                        }
+                        catch (ArgumentException exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                        }
+                    };
+                }
+                catch (NullReferenceException exception)
+                {
+                    MessageBox.Show(@"Нулевая ссылка: " + exception.Message);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(@"Выберите таблицу для переименования!");
+            }
+        }
+
+        private void RenameAttributeButton_Click(object sender, EventArgs e)
+        {
+            if (DatabasesTree.SelectedNode != null &&
+                DatabasesTree.SelectedNode.Level == 2)
+            {
+                try
+                {
+                    DatabaseCreationForm renameAttributeForm = new DatabaseCreationForm();
+                    if (DatabasesTree.Nodes.Count != 0)
+                        foreach (TreeNode treeviewNodes in DatabasesTree.Nodes)
+                            _nodes.Add(treeviewNodes.Text);
+                    renameAttributeForm.SetNodes(_nodes);
+                    renameAttributeForm.SetTextboxValue(DatabasesTree.SelectedNode.Text);
+                    renameAttributeForm.Show();
+                    renameAttributeForm.Text = @"Переименновать атрибут";
+                    renameAttributeForm.dbNameLabel.Text = @"Введите новое название атрибута";
+                    renameAttributeForm.FormClosing += (obj, args) =>
+                    {
+                        if (renameAttributeForm.InputText == string.Empty) return;
+                        try
+                        {
+                            Database parentDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Parent.Parent.Text);
+                            Table parentTable = _app.GetTableByName(parentDatabase, DatabasesTree.SelectedNode.Parent.Text);
+                            Attribute selectedAttribute =
+                                _app.GetAttributeByName(parentTable, DatabasesTree.SelectedNode.Text);
+                            _app.RenameAttribute(selectedAttribute, renameAttributeForm.InputText);
+                            showDatabases();
+                        }
+                        catch (ArgumentException exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                        }
+                    };
+                }
+                catch (NullReferenceException exception)
+                {
+                    MessageBox.Show(@"Нулевая ссылка: " + exception.Message);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(@"Выберите таблицу для переименования!");
             }
         }
     }

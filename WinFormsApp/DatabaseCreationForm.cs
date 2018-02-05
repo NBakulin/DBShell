@@ -60,6 +60,12 @@ namespace Forms
                     case @"Переименновать базу данных":
                         MessageBox.Show(@"Введите новое название базы данных!");
                         break;
+                    case @"Переименновать таблицу":
+                        MessageBox.Show(@"Введите новое название таблицы!");
+                        break;
+                    case @"Переименновать атрибут":
+                        MessageBox.Show(@"Введите новое название атрибута!");
+                        break;
                     default:
                         MessageBox.Show(@"Введите имя сервера!");
                         break;
@@ -81,5 +87,11 @@ namespace Forms
         {
 
         }
+
+        public void SetTextboxValue(string newValue)
+        {
+            DatabaseNameTextBox.Text = newValue;
+        }
+
     }
 }

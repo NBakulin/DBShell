@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.DatabasesTree = new System.Windows.Forms.TreeView();
             this.CreateDatabaseDatabase = new System.Windows.Forms.Button();
             this.CreateTableButton = new System.Windows.Forms.Button();
@@ -136,14 +136,14 @@
             this.SlaveAttribute,
             this.MasterAttributeID,
             this.SlaveAttributeID});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.LinksView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.LinksView.DefaultCellStyle = dataGridViewCellStyle4;
             this.LinksView.Location = new System.Drawing.Point(471, 36);
             this.LinksView.Name = "LinksView";
             this.LinksView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -231,6 +231,7 @@
             this.RenameAttributeButton.TabIndex = 14;
             this.RenameAttributeButton.Text = "Rename attribute";
             this.RenameAttributeButton.UseVisualStyleBackColor = true;
+            this.RenameAttributeButton.Click += new System.EventHandler(this.RenameAttributeButton_Click);
             // 
             // RenameTableButton
             // 
@@ -241,6 +242,7 @@
             this.RenameTableButton.TabIndex = 13;
             this.RenameTableButton.Text = "Rename table";
             this.RenameTableButton.UseVisualStyleBackColor = true;
+            this.RenameTableButton.Click += new System.EventHandler(this.RenameTableButton_Click);
             // 
             // RenameDatabaseButton
             // 
