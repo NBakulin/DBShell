@@ -49,7 +49,21 @@ namespace Forms
             }
             else
             {
-                MessageBox.Show(Text == @"База данных" ? "Введите название базы данных!" : (Text == @"Таблица" ? "Введите название таблицы!" : "Введите имя сервера!"));
+                switch (Text)
+                {
+                    case @"База данных":
+                        MessageBox.Show(@"Введите название базы данных!");
+                    break;
+                    case @"Таблица":
+                        MessageBox.Show(@"Введите название таблицы!");
+                        break;
+                    case @"Переименновать базу данных":
+                        MessageBox.Show(@"Введите новое название базы данных!");
+                        break;
+                    default:
+                        MessageBox.Show(@"Введите имя сервера!");
+                        break;
+                }
             }
         }
 

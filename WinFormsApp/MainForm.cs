@@ -43,18 +43,13 @@ namespace Forms
                 try
                 {
                     _app.CreateDatabase(databaseForm.InputText);
+                    showDatabases();
                 }
                 catch (ArgumentException exception)
                 {
                     MessageBox.Show(exception.Message);
                 }
 
-                newNode.Text = databaseForm.InputText;
-                DatabasesTree.Nodes.Add(newNode);
-
-
-                DatabasesTree.ExpandAll();
-                DatabasesTree.Update();
             };
         }
         #endregion CreateDatabaseButton
@@ -446,5 +441,55 @@ namespace Forms
             }
         }
         #endregion DeleteLinkButton
+
+        private void RenameDatabaseButton_Click(object sender, EventArgs e)
+        {
+
+            if (DatabasesTree.SelectedNode != null &&
+                DatabasesTree.SelectedNode.Level == 0)
+            {
+                try
+                {
+
+                    DatabaseCreationForm databaseForm = new DatabaseCreationForm();
+                    if (DatabasesTree.Nodes.Count != 0)
+                        foreach (TreeNode treeviewNodes in DatabasesTree.Nodes)
+                            _nodes.Add(treeviewNodes.Text);
+                    databaseForm.SetNodes(_nodes);
+                    databaseForm.Show();
+                    databaseForm.Text = @"Переименновать базу данных";
+                    databaseForm.dbNameLabel.Text = @"Введите новое название базы данных";
+                    databaseForm.FormClosing += (obj, args) =>
+                    {
+                        if (databaseForm.InputText == string.Empty) return;
+                        try
+                        {
+                            Database selectedDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Text);
+                            _app.RenameDatabase(selectedDatabase, databaseForm.InputText);
+                            showDatabases();
+                        }
+                        catch (ArgumentException exception)
+                        {
+                            MessageBox.Show(exception.Message);
+                        }
+                    };
+
+
+
+
+
+
+                }
+                catch (NullReferenceException exception)
+                {
+                    MessageBox.Show(@"Нулевая ссылка: " + exception.Message);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(@"Выберите базу данных!");
+            }
+        }
     }
 }

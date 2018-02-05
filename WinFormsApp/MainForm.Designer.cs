@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.DatabasesTree = new System.Windows.Forms.TreeView();
             this.CreateDatabaseDatabase = new System.Windows.Forms.Button();
@@ -38,14 +37,17 @@
             this.CreateLinkButton = new System.Windows.Forms.Button();
             this.ShowLinks = new System.Windows.Forms.Button();
             this.LinksView = new System.Windows.Forms.DataGridView();
-            this.DeleteLinkButton = new System.Windows.Forms.Button();
-            this.DeleteAttributeButton = new System.Windows.Forms.Button();
-            this.DeleteTableButton = new System.Windows.Forms.Button();
-            this.DeleteDatabaseButton = new System.Windows.Forms.Button();
             this.masterAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SlaveAttribute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MasterAttributeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SlaveAttributeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DeleteLinkButton = new System.Windows.Forms.Button();
+            this.DeleteAttributeButton = new System.Windows.Forms.Button();
+            this.DeleteTableButton = new System.Windows.Forms.Button();
+            this.DeleteDatabaseButton = new System.Windows.Forms.Button();
+            this.RenameAttributeButton = new System.Windows.Forms.Button();
+            this.RenameTableButton = new System.Windows.Forms.Button();
+            this.RenameDatabaseButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.LinksView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -55,7 +57,7 @@
             this.DatabasesTree.Indent = 25;
             this.DatabasesTree.Location = new System.Drawing.Point(42, 36);
             this.DatabasesTree.Name = "DatabasesTree";
-            this.DatabasesTree.Size = new System.Drawing.Size(413, 441);
+            this.DatabasesTree.Size = new System.Drawing.Size(413, 594);
             this.DatabasesTree.TabIndex = 0;
             // 
             // CreateDatabaseDatabase
@@ -127,10 +129,6 @@
             // 
             // LinksView
             // 
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
             this.LinksView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.LinksView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.LinksView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -149,52 +147,8 @@
             this.LinksView.Location = new System.Drawing.Point(471, 36);
             this.LinksView.Name = "LinksView";
             this.LinksView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.LinksView.Size = new System.Drawing.Size(273, 441);
+            this.LinksView.Size = new System.Drawing.Size(273, 594);
             this.LinksView.TabIndex = 7;
-            // 
-            // DeleteLinkButton
-            // 
-            this.DeleteLinkButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DeleteLinkButton.Location = new System.Drawing.Point(769, 412);
-            this.DeleteLinkButton.Name = "DeleteLinkButton";
-            this.DeleteLinkButton.Size = new System.Drawing.Size(151, 30);
-            this.DeleteLinkButton.TabIndex = 11;
-            this.DeleteLinkButton.Text = "Delete link";
-            this.DeleteLinkButton.UseVisualStyleBackColor = true;
-            this.DeleteLinkButton.Click += new System.EventHandler(this.DeleteLinkButton_Click);
-            // 
-            // DeleteAttributeButton
-            // 
-            this.DeleteAttributeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DeleteAttributeButton.Location = new System.Drawing.Point(769, 376);
-            this.DeleteAttributeButton.Name = "DeleteAttributeButton";
-            this.DeleteAttributeButton.Size = new System.Drawing.Size(151, 30);
-            this.DeleteAttributeButton.TabIndex = 10;
-            this.DeleteAttributeButton.Text = "Delete attribute";
-            this.DeleteAttributeButton.UseVisualStyleBackColor = true;
-            this.DeleteAttributeButton.Click += new System.EventHandler(this.DeleteAttributeButton_Click);
-            // 
-            // DeleteTableButton
-            // 
-            this.DeleteTableButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DeleteTableButton.Location = new System.Drawing.Point(769, 340);
-            this.DeleteTableButton.Name = "DeleteTableButton";
-            this.DeleteTableButton.Size = new System.Drawing.Size(151, 30);
-            this.DeleteTableButton.TabIndex = 9;
-            this.DeleteTableButton.Text = "Delete table";
-            this.DeleteTableButton.UseVisualStyleBackColor = true;
-            this.DeleteTableButton.Click += new System.EventHandler(this.DeleteTableButton_Click);
-            // 
-            // DeleteDatabaseButton
-            // 
-            this.DeleteDatabaseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DeleteDatabaseButton.Location = new System.Drawing.Point(769, 304);
-            this.DeleteDatabaseButton.Name = "DeleteDatabaseButton";
-            this.DeleteDatabaseButton.Size = new System.Drawing.Size(151, 30);
-            this.DeleteDatabaseButton.TabIndex = 8;
-            this.DeleteDatabaseButton.Text = "Delete database";
-            this.DeleteDatabaseButton.UseVisualStyleBackColor = true;
-            this.DeleteDatabaseButton.Click += new System.EventHandler(this.DeleteDatabaseButton_Click);
             // 
             // masterAttribute
             // 
@@ -224,11 +178,89 @@
             this.SlaveAttributeID.Name = "SlaveAttributeID";
             this.SlaveAttributeID.ReadOnly = true;
             // 
+            // DeleteLinkButton
+            // 
+            this.DeleteLinkButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteLinkButton.Location = new System.Drawing.Point(769, 546);
+            this.DeleteLinkButton.Name = "DeleteLinkButton";
+            this.DeleteLinkButton.Size = new System.Drawing.Size(151, 30);
+            this.DeleteLinkButton.TabIndex = 11;
+            this.DeleteLinkButton.Text = "Delete link";
+            this.DeleteLinkButton.UseVisualStyleBackColor = true;
+            this.DeleteLinkButton.Click += new System.EventHandler(this.DeleteLinkButton_Click);
+            // 
+            // DeleteAttributeButton
+            // 
+            this.DeleteAttributeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteAttributeButton.Location = new System.Drawing.Point(769, 510);
+            this.DeleteAttributeButton.Name = "DeleteAttributeButton";
+            this.DeleteAttributeButton.Size = new System.Drawing.Size(151, 30);
+            this.DeleteAttributeButton.TabIndex = 10;
+            this.DeleteAttributeButton.Text = "Delete attribute";
+            this.DeleteAttributeButton.UseVisualStyleBackColor = true;
+            this.DeleteAttributeButton.Click += new System.EventHandler(this.DeleteAttributeButton_Click);
+            // 
+            // DeleteTableButton
+            // 
+            this.DeleteTableButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteTableButton.Location = new System.Drawing.Point(769, 474);
+            this.DeleteTableButton.Name = "DeleteTableButton";
+            this.DeleteTableButton.Size = new System.Drawing.Size(151, 30);
+            this.DeleteTableButton.TabIndex = 9;
+            this.DeleteTableButton.Text = "Delete table";
+            this.DeleteTableButton.UseVisualStyleBackColor = true;
+            this.DeleteTableButton.Click += new System.EventHandler(this.DeleteTableButton_Click);
+            // 
+            // DeleteDatabaseButton
+            // 
+            this.DeleteDatabaseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteDatabaseButton.Location = new System.Drawing.Point(769, 438);
+            this.DeleteDatabaseButton.Name = "DeleteDatabaseButton";
+            this.DeleteDatabaseButton.Size = new System.Drawing.Size(151, 30);
+            this.DeleteDatabaseButton.TabIndex = 8;
+            this.DeleteDatabaseButton.Text = "Delete database";
+            this.DeleteDatabaseButton.UseVisualStyleBackColor = true;
+            this.DeleteDatabaseButton.Click += new System.EventHandler(this.DeleteDatabaseButton_Click);
+            // 
+            // RenameAttributeButton
+            // 
+            this.RenameAttributeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RenameAttributeButton.Location = new System.Drawing.Point(769, 375);
+            this.RenameAttributeButton.Name = "RenameAttributeButton";
+            this.RenameAttributeButton.Size = new System.Drawing.Size(151, 30);
+            this.RenameAttributeButton.TabIndex = 14;
+            this.RenameAttributeButton.Text = "Rename attribute";
+            this.RenameAttributeButton.UseVisualStyleBackColor = true;
+            // 
+            // RenameTableButton
+            // 
+            this.RenameTableButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RenameTableButton.Location = new System.Drawing.Point(769, 339);
+            this.RenameTableButton.Name = "RenameTableButton";
+            this.RenameTableButton.Size = new System.Drawing.Size(151, 30);
+            this.RenameTableButton.TabIndex = 13;
+            this.RenameTableButton.Text = "Rename table";
+            this.RenameTableButton.UseVisualStyleBackColor = true;
+            // 
+            // RenameDatabaseButton
+            // 
+            this.RenameDatabaseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RenameDatabaseButton.Location = new System.Drawing.Point(769, 303);
+            this.RenameDatabaseButton.Name = "RenameDatabaseButton";
+            this.RenameDatabaseButton.Size = new System.Drawing.Size(151, 30);
+            this.RenameDatabaseButton.TabIndex = 12;
+            this.RenameDatabaseButton.Text = "Rename database";
+            this.RenameDatabaseButton.UseVisualStyleBackColor = true;
+            this.RenameDatabaseButton.Click += new System.EventHandler(this.RenameDatabaseButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(932, 573);
+            this.ClientSize = new System.Drawing.Size(932, 660);
+            this.Controls.Add(this.RenameAttributeButton);
+            this.Controls.Add(this.RenameTableButton);
+            this.Controls.Add(this.RenameDatabaseButton);
             this.Controls.Add(this.DeleteLinkButton);
             this.Controls.Add(this.DeleteAttributeButton);
             this.Controls.Add(this.DeleteTableButton);
@@ -268,6 +300,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn SlaveAttribute;
         private System.Windows.Forms.DataGridViewTextBoxColumn MasterAttributeID;
         private System.Windows.Forms.DataGridViewTextBoxColumn SlaveAttributeID;
+        private System.Windows.Forms.Button RenameAttributeButton;
+        private System.Windows.Forms.Button RenameTableButton;
+        private System.Windows.Forms.Button RenameDatabaseButton;
     }
 }
 
