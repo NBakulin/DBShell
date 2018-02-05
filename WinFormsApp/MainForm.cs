@@ -307,7 +307,7 @@ namespace Forms
                     try
                     {
                         Table MasterTable = _app.GetTableById(link.MasterAttributeId);
-                        Table slaveTable = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId));
+                        Table slaveTable = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)); 
                         if (MasterTable != null && slaveTable != null)
                         LinksView.Rows.Add(MasterTable.Name, slaveTable.Name, link.MasterAttributeId.ToString(), link.SlaveAttributeId.ToString());
                         else

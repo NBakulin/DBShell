@@ -131,7 +131,6 @@
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.White;
-            this.LinksView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.LinksView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.LinksView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.LinksView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
