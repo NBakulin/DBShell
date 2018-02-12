@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Domain.Entities;
+using Domain.Entities.Attribute.Integer;
 using Domain.Entities.Link;
 using Attribute = Domain.Entities.Attribute.Attribute;
 
@@ -304,7 +305,7 @@ namespace Forms
                         Table MasterTable = _app.GetTableById(link.MasterAttributeId);
                         Table slaveTable = _app.GetAttributeTable(_app.GetAttributeById(link.SlaveAttributeId)); 
                         if (MasterTable != null && slaveTable != null)
-                        LinksView.Rows.Add(MasterTable.Name, slaveTable.Name, link.MasterAttributeId.ToString(), link.SlaveAttributeId.ToString());
+                        LinksView.Rows.Add(MasterTable.Name, slaveTable.Name, MasterTable.Id.ToString(), slaveTable.Id.ToString());
                         else
                         {
                             MessageBox.Show(@"Не удалось получить экземпляр таблицы.");
@@ -442,6 +443,7 @@ namespace Forms
         }
         #endregion DeleteLinkButton
 
+        #region RenameDatabasesButton
         private void RenameDatabaseButton_Click(object sender, EventArgs e)
         {
             if (DatabasesTree.SelectedNode != null &&
@@ -484,7 +486,9 @@ namespace Forms
                 MessageBox.Show(@"Выберите базу данных для переименования!");
             }
         }
+        #endregion RenameDatabasesButton
 
+        #region RenameTableButton
         private void RenameTableButton_Click(object sender, EventArgs e)
         {
             if (DatabasesTree.SelectedNode != null &&
@@ -528,7 +532,9 @@ namespace Forms
                 MessageBox.Show(@"Выберите таблицу для переименования!");
             }
         }
+        #endregion RenameTableButton
 
+        #region RenameAttributeButton
         private void RenameAttributeButton_Click(object sender, EventArgs e)
         {
             if (DatabasesTree.SelectedNode != null &&
@@ -542,20 +548,32 @@ namespace Forms
                             _nodes.Add(treeviewNodes.Text);
                     renameAttributeForm.SetNodes(_nodes);
                     renameAttributeForm.SetTextboxValue(DatabasesTree.SelectedNode.Text);
-                    renameAttributeForm.Show();
                     renameAttributeForm.Text = @"Переименновать атрибут";
                     renameAttributeForm.dbNameLabel.Text = @"Введите новое название атрибута";
+                    Database parentDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Parent.Parent.Text);
+                    Table parentTable = _app.GetTableByName(parentDatabase, DatabasesTree.SelectedNode.Parent.Text);
+                    Attribute selectedAttribute =
+                        _app.GetAttributeByName(parentTable, DatabasesTree.SelectedNode.Text);
+
+                    if (!selectedAttribute.IsPrimaryKey && !(selectedAttribute is ForeignKey))
+                    {
+                        renameAttributeForm.Show();
+                    }
+                    else
+                        MessageBox.Show(@"Нельзя переименовать уникальный идентификатор!");
+
                     renameAttributeForm.FormClosing += (obj, args) =>
                     {
                         if (renameAttributeForm.InputText == string.Empty) return;
                         try
                         {
-                            Database parentDatabase = _app.GetDatabaseByName(DatabasesTree.SelectedNode.Parent.Parent.Text);
-                            Table parentTable = _app.GetTableByName(parentDatabase, DatabasesTree.SelectedNode.Parent.Text);
-                            Attribute selectedAttribute =
-                                _app.GetAttributeByName(parentTable, DatabasesTree.SelectedNode.Text);
-                            _app.RenameAttribute(selectedAttribute, renameAttributeForm.InputText);
-                            showDatabases();
+                            if (!selectedAttribute.IsPrimaryKey && !(selectedAttribute is ForeignKey))
+                            {
+                                _app.RenameAttribute(selectedAttribute, renameAttributeForm.InputText);
+                                showDatabases();
+                            }
+                            else
+                                MessageBox.Show(@"Нельзя переименовать уникальный идентификатор!");
                         }
                         catch (ArgumentException exception)
                         {
@@ -573,6 +591,8 @@ namespace Forms
             {
                 MessageBox.Show(@"Выберите таблицу для переименования!");
             }
+            #endregion RenameAttributeButton
+            // проверить уделение связей, изменить ренейминг ID
         }
     }
 }
